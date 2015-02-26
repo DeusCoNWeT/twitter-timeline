@@ -1,0 +1,76 @@
+:host{
+	display: inline-block;	
+}
+
+.box {
+    border: 1px solid #d0f0f0;
+	border-bottom: 1px solid #d0f0f0;
+	border-left: 1px solid #d0f0f0;
+	max-width: 400px;
+	min-width: 350px;
+	padding:10px 5px;
+	margin:0;
+	font-size: 14px;
+	background: #fff; /* Old browsers */
+
+}
+
+#cabecera {
+	background: #E5F4F4; /* Old browsers */
+
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	color:#009999;
+	font-family: 'Helvetica',sans-serif;
+	font-weight: 800;
+	font-size: 16px;
+	text-align: center;
+	padding: 3px 0px;
+}
+
+.imgEvent {
+	float: left;
+	width:50px;
+	height:50px;
+	margin-right: 5px;
+	margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.imgEvent > div {
+	border-radius: 20%;	
+}
+
+.fullname {
+    font-weight: bold;
+    color: #292f33;
+}
+
+.fullname:hover{
+    color: #1E9999;
+   text-decoration:underline;
+}
+
+.username {
+    font-size: 13px;
+    color: #8899a6;
+}
+
+.nounderline {
+    text-decoration:none
+}
+
+.time {
+    font-size: 13px;
+    color: #8899a6;
+}
+
+.time:hover{
+    color: #1E9999;
+    text-decoration: underline;
+}
+
+.text {
+    font-size: 14px;
+    font-family: sans-serif;
+}

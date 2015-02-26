@@ -1,0 +1,136 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret">
+    <template>
+        <link rel="stylesheet" href="twitter-timeline.css">
+        <core-ajax 
+                   id="requestTimeline"
+                   url="http://twitter-timeline-app.appspot.com/oauth/twitter"
+                   method="GET"
+                   params='{
+                           "action": "request_token",
+                           "access_token": "{{accessToken}}",
+                           "secret_token": "{{secretToken}}",
+                           "consumer_key": "{{consumerKey}}",
+                           "consumer_secret": "{{consumerSecret}}"
+                           }'
+                   handleAs='json'
+                   on-core-response="{{authentication}}"
+                   >
+        </core-ajax>
+
+        <paper-shadow>
+            <div id ="cabecera">
+                <p style="text-align:center">Ultimos tweets</p>
+            </div>
+            <template if="{{show}}">
+                <ul class="box" style="border-bottom: 5px solid #d0d0d0;cursor:wait;text-align:center">
+                </ul>
+            </template>
+            <div style="overflow-y: auto;max-height: 400px">
+                <template id="contenido" is="auto-binding" repeat="{{events}}">
+                    <ul class="box">
+                        <core-icon  src="{{user.profile_image_url}}" class="imgEvent">
+                        </core-icon>
+                        <div style="text-align: left">
+                            <a class="nounderline" href="https://twitter.com/{{user.screen_name}}" target='_blank'>
+                                <span class="fullname">{{user.name}}</span>
+                                <span class="username">@{{user.screen_name}}</span>
+                            </a>
+                            <template if=!{{retweeted_status}}>
+                                <a class="nounderline time" href="https://twitter.com/{id}}/status/{{id_str}}" target='_blank'>
+                                    <span>{{tiempo}}</span>
+                                </a>
+                            </template>
+                            <template else={{retweeted_status}}>
+                                <a class="nounderline time"
+                                   href="https://twitter.com/{{retweeted_status.id}}/status/{{retweeted_status.id_str}}" target='_blank'>
+                                    <p>{{tiempo}}</p>
+                                </a>
+                            </template>
+                        </div>
+                        <p class="text">{{text}}</p>
+                    </ul>
+                </template>
+            </div>
+        </paper-shadow>
+
+    </template>
+    <script>
+
+        Polymer({            
+            ready: function(event, detail, sender) {
+                this.$.requestTimeline.go();
+            },
+
+            authentication: function(event, detail, sender) {
+                this.events = this.changeTime(sender.response);
+//                this.events = this.changeText(this.events);
+                console.log(this.events)
+                var t = this.$.contenido;
+                t.events = this.events;
+                this.show = false;
+            },
+
+            changeTime: function(list){
+                for (i=0;i<list.length;i++){
+                    var date = new Date(list[i].created_at);
+                    var current_date = new Date();
+                    if( (current_date.getDay() - date.getDay())    == 0 ){
+                        if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+                            list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" segundos"
+                        }
+                        else{
+                            list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" minutos";
+                        }
+                    }
+                    else if( (current_date.getDay() - date.getDay()) < 8 ){
+                        list[i].tiempo = current_date.getDay() - date.getDay()+" dias";
+                    }
+                    else{
+                        var month = ['Enero','Febrero','Marzo','Abril', 'Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                        list[i].tiempo = date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
+                    }
+                }
+                return list;
+            },
+
+/*            parseURL: function(uri) {
+                return uri.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+                    return url.link(url);
+                });
+            },
+            parseUsername: function(user) {
+                return user.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+                    var username = u.replace("@","")
+                    return u.link("http://twitter.com/"+username);
+                });
+            },
+            parseHashtag: function() {
+                return this.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+                    var tag = t.replace("#","%23")
+                    return t.link("http://search.twitter.com/search?q="+tag);
+                });
+            },
+            changeText: function(list){
+                for(i=0; i<list.length; i++){
+
+                }
+                return list;
+            }*/
+        })
+    </script>
+</polymer-element>
