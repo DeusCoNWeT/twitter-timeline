@@ -13,38 +13,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret">
+<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret count">
     <template>
+        <!-- Importacion del CSS a usar -->
         <link rel="stylesheet" href="twitter-timeline.css">
+        <!-- Request a la api de twitter solicitando el timeline. Para ello son necesarios todos los tokens -->
         <core-ajax 
                    id="requestTimeline"
                    url="http://twitter-timeline-app.appspot.com/oauth/twitter"
                    method="GET"
                    params='{
-                           "action": "request_token",
                            "access_token": "{{accessToken}}",
                            "secret_token": "{{secretToken}}",
                            "consumer_key": "{{consumerKey}}",
-                           "consumer_secret": "{{consumerSecret}}"
+                           "consumer_secret": "{{consumerSecret}}",
+                           "count": "{{count}}"
                            }'
                    handleAs='json'
-                   on-core-response="{{authentication}}"
+                   on-core-response="{{response}}"
                    >
         </core-ajax>
 
         <paper-shadow>
+            <!-- Cabecera -->
             <div id ="cabecera">
-                <p style="text-align:center">Ultimos tweets</p>
+                <p style="text-align:center">Tu Timeline</p>
             </div>
-            <template if="{{show}}">
-                <ul class="box" style="border-bottom: 5px solid #d0d0d0;cursor:wait;text-align:center">
-                </ul>
-            </template>
+            <!-- Timeline box -->
             <div style="overflow-y: auto;max-height: 400px">
                 <template id="contenido" is="auto-binding" repeat="{{events}}">
                     <ul class="box">
+                        <!-- Imagen de la persona que publica -->
                         <core-icon  src="{{user.profile_image_url}}" class="imgEvent">
                         </core-icon>
+                        <!-- Cabecera de la publicacion -->
                         <div style="text-align: left">
                             <a class="nounderline" href="https://twitter.com/{{user.screen_name}}" target='_blank'>
                                 <span class="fullname">{{user.name}}</span>
@@ -65,39 +67,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <p class="text">{{text}}</p>
                     </ul>
                 </template>
+                <ul class="box" style="text-align:center;cursor: pointer;font-size: 16px"  on-click={{mostrar}}>
+                    <span style="font-size: 12px">Mostrar más</span>
+                </ul>
             </div>
         </paper-shadow>
-
     </template>
-    <script>
 
-        Polymer({            
+
+
+    <script>
+        Polymer({
+            index: 0,
             ready: function(event, detail, sender) {
                 this.$.requestTimeline.go();
             },
-
-            authentication: function(event, detail, sender) {
+            response: function(event, detail, sender) {
                 this.events = this.changeTime(sender.response);
-//                this.events = this.changeText(this.events);
-                console.log(this.events)
-                var t = this.$.contenido;
-                t.events = this.events;
-                this.show = false;
+                this.mostrar()
             },
-
+            mostrar: function(){
+                var tweets = new Array();
+                if (this.events.length - this.index > 20){
+                    for(i = 0; i<this.index+20;i++){
+                        tweets[i] = this.events[i];
+                    }
+                    this.index += 20;
+                var t = this.$.contenido;
+                t.events = tweets;
+                }
+            },
             changeTime: function(list){
                 for (i=0;i<list.length;i++){
                     var date = new Date(list[i].created_at);
                     var current_date = new Date();
-                    if( (current_date.getDay() - date.getDay())    == 0 ){
-                        if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-                            list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" segundos"
+                    if((current_date.getDay() - date.getDay()) == 0 ){
+                        if((current_date.getHours() - date.getHours()) == 0 ){
+                            if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+                                list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" segundos"
+                            }
+                            else{
+                                list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" minutos";
+                            }
                         }
                         else{
-                            list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" minutos";
+                            if (current_date.getHours() - date.getHours() == 1)
+                                list[i].tiempo = current_date.getHours() - date.getHours()+" hora";
+                            else
+                                list[i].tiempo = current_date.getHours() - date.getHours()+" horas";
                         }
                     }
-                    else if( (current_date.getDay() - date.getDay()) < 8 ){
+                    else if( (current_date.getDay() - date.getDay()) < 15 ){
                         list[i].tiempo = current_date.getDay() - date.getDay()+" dias";
                     }
                     else{
@@ -107,30 +127,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 return list;
             },
-
-/*            parseURL: function(uri) {
-                return uri.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
-                    return url.link(url);
-                });
-            },
-            parseUsername: function(user) {
-                return user.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
-                    var username = u.replace("@","")
-                    return u.link("http://twitter.com/"+username);
-                });
-            },
-            parseHashtag: function() {
-                return this.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
-                    var tag = t.replace("#","%23")
-                    return t.link("http://search.twitter.com/search?q="+tag);
-                });
-            },
-            changeText: function(list){
-                for(i=0; i<list.length; i++){
-
-                }
-                return list;
-            }*/
         })
     </script>
 </polymer-element>
