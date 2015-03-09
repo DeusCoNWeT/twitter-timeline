@@ -41,42 +41,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
             <!-- Timeline box -->
             <div style="overflow-y: auto;max-height: 400px">
-                <template id="contenido" is="auto-binding" repeat="{{events}}">
-                    <ul class="box">
+                <template id="contenido" is="auto-binding" repeat="{{evento,index in events}}">
+                    <ul class="box" >
                         <!-- Imagen de la persona que publica -->
-                        <core-icon  src="{{user.profile_image_url}}" class="imgEvent">
+                        <core-icon  src="{{evento.user.profile_image_url}}" class="imgEvent">
                         </core-icon>
                         <!-- Cabecera de la publicacion -->
                         <div style="text-align: left">
-                            <a class="nounderline" href="https://twitter.com/{{user.screen_name}}" target='_blank'>
-                                <span class="fullname">{{user.name}}</span>
-                                <span class="username">@{{user.screen_name}}</span>
+                            <a class="nounderline" href="https://twitter.com/{{evento.user.screen_name}}" target='_blank'>
+                                <span class="fullname">{{evento.user.name}}</span>
+                                <span class="username">@{{evento.user.screen_name}}</span>
                             </a>
-                            <template if=!{{retweeted_status}}>
-                                <a class="nounderline time" href="https://twitter.com/{id}}/status/{{id_str}}" target='_blank'>
-                                    <span>{{tiempo}}</span>
+                            <template if=!{{evento.retweeted_status}}>
+                                <a class="nounderline time" href="https://twitter.com/{{evento.id}}/status/{{evento.id_str}}" target='_blank'>
+                                    <span>{{evento.tiempo}}</span>
                                 </a>
                             </template>
-                            <template else={{retweeted_status}}>
+                            <template else={{evento.retweeted_status}}>
                                 <a class="nounderline time"
-                                   href="https://twitter.com/{{retweeted_status.id}}/status/{{retweeted_status.id_str}}" target='_blank'>
-                                    <p>{{tiempo}}</p>
+                                   href="https://twitter.com/{{evento.retweeted_status.id}}/status/{{evento.retweeted_status.id_str}}" target='_blank'>
+                                    <p>{{evento.tiempo}}</p>
                                 </a>
                             </template>
                         </div>
-                        <p class="text">{{text}}</p>
+                        <p class="texto" id="prueba{{index}}" onload="{{cambiar(evento,index)}}"></p>
                     </ul>
                 </template>
                 <template if="{{ show}}">
-                    <ul class="box" style="text-align:center;cursor: pointer;font-size: 16px"  on-click={{mostrar}}>
-                        <span style="font-size: 12px">Mostrar más</span>
+                    <ul class="box boton"  on-click={{mostrar}}>
+                        <span>Mostrar más</span>
                     </ul>
                 </template>
             </div>
         </paper-shadow>
     </template>
-
-
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/ng-polymer-elements/ng-polymer-elements.min.js"></script>
 
     <script>
         Polymer({
@@ -84,10 +84,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             show: true,
             ready: function(event, detail, sender) {
                 this.$.requestTimeline.go();
+
             },
             response: function(event, detail, sender) {
                 this.events = this.changeTime(sender.response);
+                this.events = this.parsear()
                 this.mostrar()
+            },
+            cambiar: function(evento,index){
+                if(index!=undefined){
+                    this.injectBoundHTML(evento.text, this.$.contenido.parentNode.children[1+index].children[2])
+                }
             },
             mostrar: function(){
                 var tweets = new Array();
@@ -131,6 +138,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                 }
                 return list;
+            },
+            parsear: function(){
+                for(i = 0; i < this.events.length; i++){
+                    if(this.events[i].retweeted_status){
+                        this.events[i].text = this.parseURL(this.events[i].retweeted_status.text);
+                        this.events[i].text = this.parseUsername(this.events[i].text);
+                        this.events[i].text = this.parseHashtag(this.events[i].text);
+                    }
+                    else{
+                        this.events[i].text = this.parseURL(this.events[i].text);
+                        this.events[i].text = this.parseUsername(this.events[i].text);
+                        this.events[i].text = this.parseHashtag(this.events[i].text);
+                    }
+                }
+                return this.events;
+            },
+            parseURL: function(tweet) {
+                return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+                    return '<a href='+url+' target="_blank">'+url+'</a>'
+                })
+            },
+            parseUsername: function(tweet) {
+                return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+                    var username = u.replace("@","")
+                    return '<a href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
+                })
+            },
+            parseHashtag: function(tweet) {
+                return tweet.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+                    var tag = t.replace("#","")
+                    return '<a href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
+                });
             },
         })
     </script>
