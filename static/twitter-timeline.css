@@ -16,11 +16,10 @@
 }
 
 #cabecera {
-    background: #E5F4F4; /* Old browsers */
-
+    background: #0084B4; /* Old browsers */
+    color:#fff;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    color:#009999;
     font-family: 'Helvetica',sans-serif;
     font-weight: 800;
     font-size: 16px;
@@ -80,11 +79,17 @@ p > a:link, p > a:visited{
     color: #0084B4;
 }
 
-.boton {
-    text-align:center;
+.boton{
+    background: #fff;
     cursor: pointer;
+    text-align: center;
     font-size: 14px;
     font-family:'Helvetica','sans-serif';
+    color: #0084B4;
+    font-style: oblique;
+    transition: background .2s linear, border-radius 1s ease-in 1s;
+}
+.boton:hover {
+    background: #0084B4;
     color: #fff;
-    background-color: #0084B4;
 }
