@@ -16,7 +16,7 @@
 }
 
 #cabecera {
-    background: #0084B4; /* Old browsers */
+    background: #55acee; /* Old browsers */
     color:#fff;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -25,6 +25,13 @@
     font-size: 16px;
     text-align: center;
     padding: 3px 0px;
+}
+
+#fin {
+    background: #55acee;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 2px;
 }
 
 .imgEvent {
@@ -85,11 +92,29 @@ p > a:link, p > a:visited{
     text-align: center;
     font-size: 14px;
     font-family:'Helvetica','sans-serif';
-    color: #0084B4;
+    color: #55acee;
     font-style: oblique;
     transition: background .2s linear, border-radius 1s ease-in 1s;
 }
 .boton:hover {
-    background: #0084B4;
+    background: #55acee;
     color: #fff;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    background: #b9b9b9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #55acee;
+    -webkit-border-radius: 1ex;
+}
+.refrescar {
+    text-align: right;
+}
+
+.refresco {
+    font-size: 10px;
+    text-align: right;
 }

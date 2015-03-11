@@ -18,9 +18,9 @@
     "/tests/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.2",
-    "core-ajax": "Polymer/core-ajax#~0.5.2",
-    "paper-button": "Polymer/paper-button#~0.5.2",
+    "polymer": "Polymer/polymer",
+    "core-ajax": "Polymer/core-ajax",
+    "paper-button": "Polymer/paper-button",
     "core-icon": "Polymer/core-icon"
   },
   "devDependencies": {

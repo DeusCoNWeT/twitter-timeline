@@ -11,9 +11,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret count">
+<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret count since_id accion">
     <template>
         <!-- Importacion del CSS a usar -->
         <link rel="stylesheet" href="twitter-timeline.css">
@@ -27,10 +28,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                            "secret_token": "{{secretToken}}",
                            "consumer_key": "{{consumerKey}}",
                            "consumer_secret": "{{consumerSecret}}",
-                           "count": "{{count}}"
+                           "count": "{{count}}",
+                           "accion": "{{accion}}"
                            }'
                    handleAs='json'
                    on-core-response="{{response}}"
+                   >
+        </core-ajax>
+
+        <core-ajax
+                   id="refreshTimeline"
+                   url="http://twitter-timeline-app.appspot.com/oauth/twitter"
+                   method="GET"
+                   params='{
+                           "access_token": "{{accessToken}}",
+                           "secret_token": "{{secretToken}}",
+                           "consumer_key": "{{consumerKey}}",
+                           "consumer_secret": "{{consumerSecret}}",
+                           "accion": "{{accion}}",
+                           "since_id": "{{since_id}}"
+                           }'
+                   handleAs='json'
+                   on-core-response="{{response_recarga}}"
                    >
         </core-ajax>
 
@@ -38,6 +57,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- Cabecera -->
             <div id ="cabecera">
                 <p style="text-align:center">Tu Timeline</p>
+                <paper-button class="refresco" on-click={{refrescar}}>
+                    Refrescar
+                </paper-button>
             </div>
             <!-- Timeline box -->
             <div style="overflow-y: auto;max-height: 400px">
@@ -73,6 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </ul>
                 </template>
             </div>
+            <div id="fin"></div>
         </paper-shadow>
     </template>
     <script src="bower_components/angular/angular.min.js"></script>
@@ -82,20 +105,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer({
             index: 0,
             show: true,
+            since_id: "",
+            accion: "request_timeline",
+
             ready: function(event, detail, sender) {
                 this.$.requestTimeline.go();
-
             },
+            /*Funcion que prepara los tweets antes de mostrarlos*/
             response: function(event, detail, sender) {
                 this.events = this.changeTime(sender.response);
-                this.events = this.parsear()
+                this.events = this.parsear(this.events)
                 this.mostrar()
             },
+            /*Funcion que recibe los nuevos tweets tras refrescar, los prepara y concatena a los antiguos para mostrarlos*/
+/*            response_recarga: function(event, detail, sender){
+                this.refrescado = sender.response.splice(-1,1)
+                this.refrescado = this.changeTime(this.refrescado)
+                this.refrescado = this.parsear(this.refrescado)
+                console.log(this.refrescado)
+                if(this.refrescado.id != this.events[0].id)
+                    this.events  = this.refrescado.concat(this.events)
+                console.log(this.events)
+                this.mostrar()
+            },*/
+            /*Funcion que inyecta el codigo html del tweet para que se pueda visualizar*/
             cambiar: function(evento,index){
                 if(index!=undefined){
                     this.injectBoundHTML(evento.text, this.$.contenido.parentNode.children[1+index].children[2])
                 }
             },
+            /*Funcion que se encarga de la paginación de los tweets*/
             mostrar: function(){
                 var tweets = new Array();
                 if (this.events.length - this.index > 20){
@@ -109,6 +148,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     t.events = tweets;
                 }
             },
+            /*Funcion que se encarga del refresco de los tweets cuando el usuario lo solicita*/
+            refrescar: function(){
+                this.$.requestTimeline.go();
+            },
+            /*Funcion que muestra el tiempo que hace desde que se publicó un tweet*/
             changeTime: function(list){
                 for (i=0;i<list.length;i++){
                     var date = new Date(list[i].created_at);
@@ -139,32 +183,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 return list;
             },
-            parsear: function(){
-                for(i = 0; i < this.events.length; i++){
-                    if(this.events[i].retweeted_status){
-                        this.events[i].text = this.parseURL(this.events[i].retweeted_status.text);
-                        this.events[i].text = this.parseUsername(this.events[i].text);
-                        this.events[i].text = this.parseHashtag(this.events[i].text);
+            /*Funcion padre que parsea el texto del tweet*/
+            parsear: function(lista){
+                for(i = 0; i < lista.length; i++){
+                    if(lista[i].retweeted_status){
+                        lista[i].text = this.parseURL(lista[i].retweeted_status.text);
+                        lista[i].text = this.parseUsername(lista[i].text);
+                        lista[i].text = this.parseHashtag(lista[i].text);
                     }
                     else{
-                        this.events[i].text = this.parseURL(this.events[i].text);
-                        this.events[i].text = this.parseUsername(this.events[i].text);
-                        this.events[i].text = this.parseHashtag(this.events[i].text);
+                        lista[i].text = this.parseURL(lista[i].text);
+                        lista[i].text = this.parseUsername(lista[i].text);
+                        lista[i].text = this.parseHashtag(lista[i].text);
                     }
                 }
-                return this.events;
+                return lista;
             },
+            /*Parseo de las urls de dentro de los tweets*/
             parseURL: function(tweet) {
                 return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
                     return '<a href='+url+' target="_blank">'+url+'</a>'
                 })
             },
+            /*Parseo de los nombres de usuario de dentro de los tweets*/
             parseUsername: function(tweet) {
                 return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
                     var username = u.replace("@","")
                     return '<a href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
                 })
             },
+            /*Parseo de los hastaghs de dentro de los tweets*/
             parseHashtag: function(tweet) {
                 return tweet.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
                     var tag = t.replace("#","")
