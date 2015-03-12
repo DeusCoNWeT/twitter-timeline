@@ -11,6 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="bower_components/core-icons/core-icons.html">
+<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
@@ -35,32 +37,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    on-core-response="{{response}}"
                    >
         </core-ajax>
-
-        <core-ajax
-                   id="refreshTimeline"
-                   url="http://twitter-timeline-app.appspot.com/oauth/twitter"
-                   method="GET"
-                   params='{
-                           "access_token": "{{accessToken}}",
-                           "secret_token": "{{secretToken}}",
-                           "consumer_key": "{{consumerKey}}",
-                           "consumer_secret": "{{consumerSecret}}",
-                           "accion": "{{accion}}",
-                           "since_id": "{{since_id}}"
-                           }'
-                   handleAs='json'
-                   on-core-response="{{response_recarga}}"
-                   >
-        </core-ajax>
-
         <paper-shadow>
             <!-- Cabecera -->
-            <div id ="cabecera">
-                <p style="text-align:center">Tu Timeline</p>
-                <paper-button class="refresco" on-click={{refrescar}}>
-                    Refrescar
-                </paper-button>
-            </div>
+            <paper-shadow>
+                <div id ="cabecera" horizontal center-justified layout>
+                    <p flex style="text-align:center; padding-left:50px">Tu Timeline</p>
+                    <core-icon-button class="boton_refrescar" icon="refresh" on-click={{refrescar}}></core-icon-button>
+                </div>
+            </paper-shadow>
             <!-- Timeline box -->
             <div style="overflow-y: auto;max-height: 400px">
                 <template id="contenido" is="auto-binding" repeat="{{evento,index in events}}">
@@ -98,8 +82,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div id="fin"></div>
         </paper-shadow>
     </template>
-    <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/ng-polymer-elements/ng-polymer-elements.min.js"></script>
 
     <script>
         Polymer({
@@ -117,17 +99,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.events = this.parsear(this.events)
                 this.mostrar()
             },
-            /*Funcion que recibe los nuevos tweets tras refrescar, los prepara y concatena a los antiguos para mostrarlos*/
-/*            response_recarga: function(event, detail, sender){
-                this.refrescado = sender.response.splice(-1,1)
-                this.refrescado = this.changeTime(this.refrescado)
-                this.refrescado = this.parsear(this.refrescado)
-                console.log(this.refrescado)
-                if(this.refrescado.id != this.events[0].id)
-                    this.events  = this.refrescado.concat(this.events)
-                console.log(this.events)
-                this.mostrar()
-            },*/
             /*Funcion que inyecta el codigo html del tweet para que se pueda visualizar*/
             cambiar: function(evento,index){
                 if(index!=undefined){
