@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret count since_id accion">
+<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret count since_id">
     <template>
         <!-- Importacion del CSS a usar -->
         <link rel="stylesheet" href="twitter-timeline.css">
@@ -30,8 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                            "secret_token": "{{secretToken}}",
                            "consumer_key": "{{consumerKey}}",
                            "consumer_secret": "{{consumerSecret}}",
-                           "count": "{{count}}",
-                           "accion": "{{accion}}"
+                           "count": "{{count}}"
                            }'
                    handleAs='json'
                    on-core-response="{{response}}"
@@ -88,7 +87,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             index: 0,
             show: true,
             since_id: "",
-            accion: "request_timeline",
 
             ready: function(event, detail, sender) {
                 this.$.requestTimeline.go();
