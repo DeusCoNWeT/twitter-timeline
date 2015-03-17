@@ -1,18 +1,19 @@
 {
-  "name": "twitter-login",
+  "name": "twitter-timeline",
   "version": "0.0.1",
   "authors": [
-    "Ana Isabel Lopera <lopera.martinez.ana.isabel@gmail.com>"
+    "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
-  "description": "Web component for login twitter button",
+  "description": "Web component for twitter timeline",
   "keywords": [
     "web-compoments",
     "twitter",
+    "timeline",
     "polymer"
   ],
-  "main": "twitter-login.html",
+  "main": "twitter-timeline.html",
   "license": "MIT",
-  "homepage": "https://github.com/ailopera/twitter-login/",
+  "homepage": "https://github.com/JuanFryS/twitter-timeline",
   "ignore": [
     "/.*",
     "/tests/"
