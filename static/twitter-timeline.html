@@ -99,7 +99,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       show: true,
       since_id: "",
       endpoint:'',
-
+      language: 'es',
+      count: '200',
 
       ready: function(event, detail, sender) {
         if (this.accesToken && this.endpoint){
@@ -109,7 +110,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.idiom = 'en_en.json'
           }
           this.$.requestLanguage.go();
-          this.$.requestTimeline.go();
         }
       },
 
@@ -121,7 +121,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.idiom = 'en_en.json'
           }
           this.$.requestLanguage.go();
-          this.$.requestTimeline.go();
         }
       },
 
@@ -136,7 +135,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.idiom = "es_es.json"
           this.$.requestLanguage.go();
         }
-        this.$.requestTimeline.go();
       },
 
       /* This function prepares the tweets before displaying them */
@@ -147,6 +145,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       language_response: function(event, detail,sender){
         this.data = sender.response;
+        if(!this.events){
+          this.$.requestTimeline.go();
+        }
+        else{
+          this.events = this.changeTime(this.events)
+          var t = this.$.content;
+          var tweets = new Array();
+          for(i = 0; i < t.events.length; i++){
+            tweets[i]=this.events[i]
+          }
+          t.events = tweets;
+        }
       },
       /* This function injects tweet HTML code in order to be represented. */
       change: function(event,index){
