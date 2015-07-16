@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id language">
+<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id language refresh_time">
 
   <template>
     <!-- CSS File import -->
@@ -101,6 +101,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       endpoint:'',
       language: 'es',
       count: '200',
+      /*1 seg = 1000*/
+      refresh_time: '60000',
 
       ready: function(event, detail, sender) {
         if (this.accesToken && this.endpoint){
@@ -142,6 +144,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.events = this.changeTime(detail.response);
         this.events = this.parser(this.events)
         this.show()
+        setInterval(
+          function() {
+            document.querySelector('twitter-timeline').$.requestTimeline.go()
+          }, this.refresh_time
+        );
       },
       language_response: function(event, detail,sender){
         this.data = sender.response;
