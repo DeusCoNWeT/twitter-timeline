@@ -144,9 +144,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.events = this.changeTime(detail.response);
         this.events = this.parser(this.events)
         this.show()
+        var back = this
         setInterval(
           function() {
-            document.querySelector('twitter-timeline').$.requestTimeline.go()
+            back.$.requestTimeline.go()
           }, this.refresh_time
         );
       },
