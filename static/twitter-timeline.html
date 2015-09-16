@@ -84,7 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </ul>
         </template>
         <template if="{{ show}}">
-          <ul class="box button"  on-click={{show}}>
+          <ul class="box button"  on-click={{mostrar}}>
             <span>{{data.load_more}}</span>
           </ul>
         </template>
@@ -143,7 +143,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       response: function(event, detail, sender) {
         this.events = this.changeTime(detail.response);
         this.events = this.parser(this.events)
-        this.show()
+        this.mostrar()
       },
 
       language_response: function(event, detail,sender){
@@ -175,7 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       /* Function that handles paging tweets*/
-      show: function(){
+      mostrar: function(){
         var tweets = new Array();
         if (this.events.length - this.index >= 20){
           for(i = 0; i<this.index+20;i++){
