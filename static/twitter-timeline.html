@@ -144,17 +144,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.events = this.changeTime(detail.response);
         this.events = this.parser(this.events)
         this.show()
-        var back = this
-        setInterval(
-          function() {
-            back.$.requestTimeline.go()
-          }, this.refresh_time
-        );
       },
+
       language_response: function(event, detail,sender){
         this.data = sender.response;
         if(!this.events){
           this.$.requestTimeline.go();
+          var back = this
+          window.setInterval(
+            function() {
+              back.$.requestTimeline.go();
+            }, this.refresh_time
+          );
         }
         else{
           this.events = this.changeTime(this.events)
