@@ -150,6 +150,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.data = sender.response;
         if(!this.events){
           this.$.requestTimeline.go();
+          console.log(this.events)
           var back = this
           window.setInterval(
             function() {
