@@ -9,170 +9,360 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/core-ajax/core-ajax.html">
-<link rel="import" href="bower_components/core-icon/core-icon.html">
-<link rel="import" href="bower_components/core-icons/core-icons.html">
-<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
-<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id language refresh_time">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
 
+
+
+
+<dom-module id="twitter-timeline">
+
+  <style>
+    :host{
+      display: inline-block;
+    }
+
+    .box {
+      border: 1px solid #d0f0f0;
+      border-bottom: 1px solid #d0f0f0;
+      border-left: 1px solid #d0f0f0;
+      max-width: 400px;
+      min-width: 350px;
+      padding:10px 5px;
+      margin:0;
+      font-size: 14px;
+      background: #fff; /* Old browsers */
+
+    }
+
+    #header {
+      background: #55acee; /* Old browsers */
+      color:#fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-family: 'Helvetica',sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 3px 0px;
+    }
+
+    #header > p {
+      text-align:center;
+      padding-left:50px;
+    }
+    #contain {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+    #end {
+      background: #55acee;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      height: 2px;
+    }
+
+    .imgEvent {
+      float: left;
+      width:50px;
+      height:50px;
+      margin-left: 5px;
+      margin-right: 15px;
+      margin-bottom: 15px;
+      margin-top: 15px;
+    }
+
+    .imgEvent > div {
+      border-radius: 20%;
+    }
+
+    .fullname {
+      font-weight: bold;
+      color: #292f33;
+    }
+
+    .fullname:hover{
+      color: #1E9999;
+      text-decoration:underline;
+    }
+
+    .username {
+      font-size: 13px;
+      color: #8899a6;
+    }
+
+    .nounderline {
+      text-decoration:none
+    }
+
+    .time {
+      font-size: 13px;
+      color: #8899a6;
+    }
+
+    .time:hover{
+      color: #1E9999;
+      text-decoration: underline;
+    }
+
+    .text {
+      font-size: 14px;
+      font-family: sans-serif;
+    }
+
+    p > a:link, p > a:visited{
+      color: #0084B4;
+    }
+
+    .button{
+      background: #fff;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      font-family:'Helvetica','sans-serif';
+      color: #55acee;
+      font-style: oblique;
+      transition: background .2s linear, border-radius 1s ease-in 1s;
+    }
+    .button:hover {
+      background: #55acee;
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      background: #b9b9b9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #55acee;
+      -webkit-border-radius: 1ex;
+    }
+    .refresh {
+      text-align: right;
+    }
+
+    .refresh_button {
+      text-align: right;
+      padding-bottom: 10px;
+    }
+
+  </style>
   <template>
     <!-- CSS File import -->
     <link rel="stylesheet" href="twitter-timeline.css">
+
     <!-- Request to the API. Tokens are necessary -->
-    <core-ajax 
+    <iron-ajax 
                id="requestTimeline"
-               url='{{ endpoint }}'
+               url="{{ endpoint }}"
                method="GET"
-               params='{
-                       "access_token": "{{accessToken}}",
-                       "secret_token": "{{secretToken}}",
-                       "consumer_key": "{{consumerKey}}",
-                       "consumer_secret": "{{consumerSecret}}",
-                       "count": "{{count}}"
-                       }'
+               params="{{timeline_params}}"
                handleAs='json'
-               on-core-response="{{response}}"
+               on-response="_response"
                >
-    </core-ajax>
+    </iron-ajax>
 
-    <core-ajax
+    <iron-ajax
                id="requestLanguage"
-               url='language/{{idiom}}'
+               url="{{language_url}}"
                method="GET"
-               handleAs='json'
-               on-core-response="{{language_response}}"
+               handleAs="json"
+               on-response="_language_response"
                >
-    </core-ajax>
+    </iron-ajax>
 
-    <paper-shadow>
+    <paper-material>
       <!-- Header -->
-      <paper-shadow>
-        <div id ="header" horizontal center-justified layout>
-          <p flex style="text-align:center; padding-left:50px">{{data.title}}</p>
-          <core-icon-button class="refresh_button" title="{{data.refresh}}" icon="refresh" on-click={{refresh_func}}></core-icon-button>
+      <paper-material>
+        <div id ="header" class="horizontal center-justified layout">
+          <p class="flex">{{data.title}}</p>
+          <paper-icon-button class="refresh_button" title="{{data.refresh}}" icon="refresh" on-click="refresh_func">
+          </paper-icon-button>
         </div>
-      </paper-shadow>
+      </paper-material>
       <!-- Timeline box -->
-      <div style="overflow-y: auto;max-height: 400px">
-        <template id="content" is="auto-binding" repeat="{{event,index in events}}">
-          <ul class="box" >
+      <div id="contain">
+        <template id="content" is="dom-repeat" items$="{{events}}">
+          <ul class="box" onload="{{change(item,index)}}">
             <!-- Profile picture -->
-            <core-icon src="{{event.user.profile_image_url_https}}" class="imgEvent">
-            </core-icon>
+            <iron-icon src="{{item.user.profile_image_url_https}}" class="imgEvent">
+            </iron-icon>
             <!-- Publication Header -->
             <div style="text-align: left">
-              <a class="nounderline" href="https://twitter.com/{{event.user.screen_name}}" target='_blank'>
-                <span class="fullname">{{event.user.name}}</span>
-                <span class="username">@{{event.user.screen_name}}</span>
+              <a class="nounderline" href$="{{_getUserurl(item.user.screen_name)}}" target='_blank'>
+                <span class="fullname">{{item.user.name}}</span>
+                <span class="username">@<span>{{item.user.screen_name}}</span></span>
               </a>
-              <template if=!{{event.retweeted_status}}>
-                <a class="nounderline time" href="https://twitter.com/{{event.id}}/status/{{event.id_str}}" target='_blank'>
-                  <span>{{event.time}}</span>
+              <!-- No funcionara, hay que meter un if computado -->
+              <template is="dom-if" if="{{_withoutStatus(item.retweeted_status)}}">
+                <a class="nounderline time" href="{{_getStatusUrl(item.id, item.id_str)}}" target="_blank">
+                  <span>{{item.time}}</span>
                 </a>
               </template>
-              <template else={{event.retweeted_status}}>
+              <template is="dom-if" if="{{item.retweeted_status}}">
                 <a class="nounderline time"
-                   href="https://twitter.com/{{event.retweeted_status.id}}/status/{{event.retweeted_status.id_str}}" target='_blank'>
-                  <p>{{event.time}}</p>
+                   href="{{_getStatusUrl(item.retweeted_status.id, item.retweeted_status.id_str)}}" target="_blank">
+                  <p>{{item.time}}</p>
                 </a>
               </template>
             </div>
-            <p class="text" id="text{{index}}" onload="{{change(event,index)}}"></p>
+            <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{item.text}}">
+            
+            </p>
           </ul>
         </template>
-        <template if="{{ show}}">
-          <ul class="box button"  on-click={{mostrar}}>
+        <template if="{{show}}">
+          <ul class="box button" on-click="mostrar">
             <span>{{data.load_more}}</span>
           </ul>
         </template>
       </div>
       <div id="end"></div>
-    </paper-shadow>
+    </paper-material>
   </template>
 
   <script>
     Polymer({
-      index: 0,
-      show: true,
-      since_id: "",
-      endpoint:'',
-      language: 'es',
-      count: '200',
-      /*1 seg = 1000*/
-      refresh_time: '60000',
+      is:"twitter-timeline",
+      properties: {
+        index: {
+          type: Number,
+          value: 0
+        },
+        show: {
+          type: Boolean,
+          value: true,
+        },
 
-      ready: function(event, detail, sender) {
-        if (this.accesToken && this.endpoint){
-          if(this.language == 'es'){
-            this.idiom = 'es_es.json'
-          }else if(this.language == 'en'){
-            this.idiom = 'en_en.json'
-          }
-          this.$.requestLanguage.go();
+        since_id: {
+          type: String,
+          value:""
+        },
+
+        endpoint: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+        language: {
+          type: String,
+          value: "es",
+          notify: true,
+          reflectToAttribute: true,
+          observer: "languageChanged"
+        },
+        count: { 
+          type: Number,
+          value: 200,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        /*1 seg = 1000*/
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          notify: true,
+          reflectToAttribute: true
+        },
+        accessToken: {
+          type: String,
+          value: "",
+          notify: true,
+          reflectToAttribute: true
+        },
+        secretToken: {
+          type: String,
+          value: "",
+          notify: true,
+          reflectToAttribute: true 
+        },
+        consumerKey: {
+          type: String,
+          value: "",
+          notify: true,
+          reflectToAttribute: true 
+        },
+        consumerSecret: {
+          type: String,
+          value: "",
+          notify: true,
+          reflectToAttribute: true 
+        },
+        language_url: {
+          type: String,
+          computed: "_calculateLanguageUrl(idiom)"
+        },
+        timeline_params: {
+          type: String,
+          computed: "_calculateTimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
         }
-      },
 
-      domReady: function(e,d,s) {
+      },
+      attached: function(event, detail) {
         if (this.accessToken && this.endpoint){
           if(this.language == 'es'){
             this.idiom = 'es_es.json'
           }else if(this.language == 'en'){
             this.idiom = 'en_en.json'
           }
-          this.$.requestLanguage.go();
+          this.$.requestLanguage.generateRequest();
         }
       },
 
-      attributeChanged: function(attrName, oldVal, newVal) {
-        if(newVal === "en" && attrName == "language"){
+      /* Observers */
+      languageChanged: function(oldVal, newVal) {
+        if(newVal === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
-          this.$.requestLanguage.go();
+          this.$.requestLanguage.generateRequest();
         }
-        else if(newVal === "es" && attrName == "language"){
+        else if(newVal === "es"){
           this.language = "es";
           this.idiom = "es_es.json"
-          this.$.requestLanguage.go();
+          this.$.requestLanguage.generateRequest();
         }
       },
 
       /* This function prepares the tweets before displaying them */
-      response: function(event, detail, sender) {
+      _response: function(event, detail) {
         this.events = this.changeTime(detail.response);
         this.events = this.parser(this.events)
         this.toDisplay()
       },
 
-      language_response: function(event, detail,sender){
-        this.data = sender.response;
+      _language_response: function(event, detail){
+        this.data = detail.response;
         if(!this.events){
-          this.$.requestTimeline.go();
-          console.log(this.events)
+          this.$.requestTimeline.generateRequest();
           var back = this
           window.setInterval(
             function() {
-              back.$.requestTimeline.go();
+              back.$.requestTimeline.generateRequest();
             }, this.refresh_time
           );
         }
         else{
           this.events = this.changeTime(this.events)
-          var t = this.$.content;
           var tweets = new Array();
-          for(i = 0; i < t.events.length; i++){
+          for(i = 0; i < this.events.length; i++){
             tweets[i]=this.events[i]
           }
-          t.events = tweets;
+          this.events = tweets;
         }
       },
       /* This function injects tweet HTML code in order to be represented. */
       change: function(event,index){
-        if(index!=undefined){
-          this.injectBoundHTML(event.text, this.$.content.parentNode.children[1+index].children[2])
-        }
+        if(index || index === 0){
+            //this.injectBoundHTML(event.text, this.$.content.parentNode.children[1+index].children[2]);
+            this.push('prueba', event.text);
+          }
       },
       /* Function that handles paging tweets*/
       toDisplay: function(){
@@ -185,12 +375,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (this.events.length - this.index < 20)
             this.show = false;
           var t = this.$.content;
-          t.events = tweets;
+          this.events = tweets;
         }
       },
       /* Function that refresh the timeline */
       refresh_func: function(){
-        this.$.requestTimeline.go();
+        this.$.requestTimeline.generateRequest();
       },
       /* Function that displays the date when the tweets was published */
       changeTime: function(list){
@@ -264,6 +454,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '<a href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
+      /* Calculate endpoint for request url */
+      _calculateLanguageUrl: function(file) {
+        return "language/" + file; 
+      },
+      _calculateTimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+        return {
+          access_token: accessToken,
+          secret_token: secretToken,
+          consumer_key: consumerKey,
+          consumer_secret: consumerSecret,
+          count: count
+        };
+      },
+      _getUserurl: function(user) {
+        return "https://twitter.com/" + user;
+      },
+      _getStatusUrl: function(id, id_str) {
+        return "https://twitter.com/" + id + "/status/" + id_str;
+      },
+      _getTextId: function(index) {
+        return "Text" + index; 
+      },
+      _withoutStatus: function(status) {
+        return !status; 
+      }
     })
   </script>
-</polymer-element>
+</dom-module>
