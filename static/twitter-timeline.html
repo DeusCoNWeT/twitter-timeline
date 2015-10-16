@@ -22,141 +22,134 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 <dom-module id="twitter-timeline">
-
-  <style>
-    :host{
-      display: inline-block;
-    }
-
-    .box {
-      border: 1px solid #d0f0f0;
-      border-bottom: 1px solid #d0f0f0;
-      border-left: 1px solid #d0f0f0;
-      max-width: 400px;
-      min-width: 350px;
-      padding:10px 5px;
-      margin:0;
-      font-size: 14px;
-      background: #fff; /* Old browsers */
-
-    }
-
-    #header {
-      background: #55acee; /* Old browsers */
-      color:#fff;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      font-family: 'Helvetica',sans-serif;
-      font-weight: 800;
-      font-size: 16px;
-      padding: 3px 0px;
-    }
-
-    #header > p {
-      text-align:center;
-      padding-left:50px;
-    }
-    #contain {
-      overflow-y: auto;
-      max-height: 400px;
-    }
-    #end {
-      background: #55acee;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      height: 2px;
-    }
-
-    .imgEvent {
-      float: left;
-      width:50px;
-      height:50px;
-      margin-left: 5px;
-      margin-right: 15px;
-      margin-bottom: 15px;
-      margin-top: 15px;
-    }
-
-    .imgEvent > div {
-      border-radius: 20%;
-    }
-
-    .fullname {
-      font-weight: bold;
-      color: #292f33;
-    }
-
-    .fullname:hover{
-      color: #1E9999;
-      text-decoration:underline;
-    }
-
-    .username {
-      font-size: 13px;
-      color: #8899a6;
-    }
-
-    .nounderline {
-      text-decoration:none
-    }
-
-    .time {
-      font-size: 13px;
-      color: #8899a6;
-    }
-
-    .time:hover{
-      color: #1E9999;
-      text-decoration: underline;
-    }
-
-    .text {
-      font-size: 14px;
-      font-family: sans-serif;
-    }
-
-    p > a:link, p > a:visited{
-      color: #0084B4;
-    }
-
-    .button{
-      background: #fff;
-      cursor: pointer;
-      text-align: center;
-      font-size: 14px;
-      font-family:'Helvetica','sans-serif';
-      color: #55acee;
-      font-style: oblique;
-      transition: background .2s linear, border-radius 1s ease-in 1s;
-    }
-    .button:hover {
-      background: #55acee;
-      color: #fff;
-    }
-
-    ::-webkit-scrollbar {
-      width: 4px;
-      background: #b9b9b9;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #55acee;
-      -webkit-border-radius: 1ex;
-    }
-    .refresh {
-      text-align: right;
-    }
-
-    .refresh_button {
-      text-align: right;
-      padding-bottom: 10px;
-    }
-
-  </style>
   <template>
-    <!-- CSS File import -->
-    <link rel="stylesheet" href="twitter-timeline.css">
+    <style is="custom-style">
+      :host{
+        display: inline-block;
+      }
 
+      .box {
+        border: 1px solid #d0f0f0;
+        border-bottom: 1px solid #d0f0f0;
+        border-left: 1px solid #d0f0f0;
+        max-width: 400px;
+        min-width: 350px;
+        padding:10px 5px;
+        margin:0;
+        font-size: 14px;
+        background: #fff; /* Old browsers */
+
+      }
+
+      #header {
+        background: #55acee; /* Old browsers */
+        color:#fff;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        font-family: 'Helvetica',sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+        padding: 3px 0px;
+      }
+
+      #header > p {
+        text-align:center;
+        padding-left:50px;
+      }
+      #contain {
+        overflow-y: auto;
+        max-height: 400px;
+      }
+      #end {
+        background: #55acee;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        height: 2px;
+      }
+
+      .imgEvent {
+        float: left;
+        width:50px;
+        height:50px;
+        margin: 2px 15px;
+      }
+
+      .imgEvent > div {
+        border-radius: 20%;
+      }
+
+      .fullname {
+        font-weight: bold;
+        color: #292f33;
+      }
+
+      .fullname:hover{
+        color: #1E9999;
+        text-decoration:underline;
+      }
+
+      .username {
+        font-size: 13px;
+        color: #8899a6;
+      }
+
+      .nounderline {
+        text-decoration:none;
+        margin-right: 5px;
+      }
+
+      .time {
+        font-size: 13px;
+        color: #8899a6;
+      }
+
+      .time:hover{
+        color: #1E9999;
+        text-decoration: underline;
+      }
+
+      .text {
+        font-size: 14px;
+        font-family: sans-serif;
+        margin:5px 0px;
+      }
+
+      .button{
+        background: #fff;
+        cursor: pointer;
+        text-align: center;
+        font-size: 14px;
+        font-family:'Helvetica','sans-serif';
+        color: #55acee;
+        font-style: oblique;
+        transition: background .2s linear, border-radius 1s ease-in 1s;
+      }
+      .button:hover {
+        background: #55acee;
+        color: #fff;
+      }
+      .prueba {
+        color: red;
+        text-decoration: none;
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+        background: #b9b9b9;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #55acee;
+        -webkit-border-radius: 1ex;
+      }
+      .refresh {
+        text-align: right;
+      }
+
+      .refresh_button {
+        text-align: right;
+        padding-bottom: 10px;
+      }
+    </style>
     <!-- Request to the API. Tokens are necessary -->
     <iron-ajax 
                id="requestTimeline"
@@ -188,37 +181,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-material>
       <!-- Timeline box -->
       <div id="contain">
-        <template id="content" is="dom-repeat" items$="{{events}}">
-          <ul class="box" onload="{{change(item,index)}}">
+        <template id="content" is="dom-repeat" items="{{events}}">
+          <ul class="box horizontal layout ">
             <!-- Profile picture -->
             <iron-icon src="{{item.user.profile_image_url_https}}" class="imgEvent">
             </iron-icon>
             <!-- Publication Header -->
-            <div style="text-align: left">
-              <a class="nounderline" href$="{{_getUserurl(item.user.screen_name)}}" target='_blank'>
-                <span class="fullname">{{item.user.name}}</span>
-                <span class="username">@<span>{{item.user.screen_name}}</span></span>
-              </a>
-              <!-- No funcionara, hay que meter un if computado -->
-              <template is="dom-if" if="{{_withoutStatus(item.retweeted_status)}}">
-                <a class="nounderline time" href="{{_getStatusUrl(item.id, item.id_str)}}" target="_blank">
-                  <span>{{item.time}}</span>
+            <div style="text-align: left" class="vertical layout flex">
+              <div class="horizontal layout ">
+                <a class="nounderline" href="{{_getUserurl(item.user.screen_name)}}" target='_blank'>
+                  <span class="fullname">{{item.user.name}}</span>
+                  <span class="username">@<span>{{item.user.screen_name}}</span></span>
                 </a>
-              </template>
-              <template is="dom-if" if="{{item.retweeted_status}}">
-                <a class="nounderline time"
-                   href="{{_getStatusUrl(item.retweeted_status.id, item.retweeted_status.id_str)}}" target="_blank">
-                  <p>{{item.time}}</p>
-                </a>
-              </template>
+                <!-- No funcionara, hay que meter un if computado -->
+
+                <template is="dom-if" if="{{_withoutStatus(item.retweeted_status)}}">
+                  <a class="nounderline time" href="{{_getStatusUrl(item.id, item.id_str)}}" target="_blank">
+                    <span>{{item.time}}</span>
+                  </a>
+                </template>
+                <template is="dom-if" if="{{item.retweeted_status}}">
+                  <a class="nounderline time"
+                     href="{{_getStatusUrl(item.retweeted_status.id, item.retweeted_status.id_str)}}" target="_blank">
+                    <span>{{item.time}}</span>
+                  </a>
+                </template>
+              </div>
+              <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{item.text}}"></p>
             </div>
-            <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{item.text}}">
-            
-            </p>
           </ul>
         </template>
-        <template if="{{show}}">
-          <ul class="box button" on-click="mostrar">
+        <template if="{{show}}" is="dom-if">
+          <ul class="box button" on-click="toDisplay()">
             <span>{{data.load_more}}</span>
           </ul>
         </template>
@@ -302,8 +296,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         timeline_params: {
           type: String,
           computed: "_calculateTimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
+        },
+        events: {
+          type: Array,
+          notify: true
         }
-
       },
       attached: function(event, detail) {
         if (this.accessToken && this.endpoint){
@@ -332,11 +329,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
-        this.events = this.changeTime(detail.response);
-        this.events = this.parser(this.events)
-        this.toDisplay()
+        this.events = this.parser(this.changeTime(detail.response));
       },
-
       _language_response: function(event, detail){
         this.data = detail.response;
         if(!this.events){
@@ -357,27 +351,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.events = tweets;
         }
       },
-      /* This function injects tweet HTML code in order to be represented. */
-      change: function(event,index){
-        if(index || index === 0){
-            //this.injectBoundHTML(event.text, this.$.content.parentNode.children[1+index].children[2]);
-            this.push('prueba', event.text);
-          }
-      },
-      /* Function that handles paging tweets*/
-      toDisplay: function(){
-        var tweets = new Array();
-        if (this.events.length - this.index >= 20){
-          for(i = 0; i<this.index+20;i++){
-            tweets[i] = this.events[i];
-          }
-          this.index += 20;
-          if (this.events.length - this.index < 20)
-            this.show = false;
-          var t = this.$.content;
-          this.events = tweets;
-        }
-      },
       /* Function that refresh the timeline */
       refresh_func: function(){
         this.$.requestTimeline.generateRequest();
@@ -387,7 +360,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
           var current_date = new Date();
-          if((current_date.getDate() - date.getDate()) == 0 ){
+          /* Años*/
+          if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+            var dif = current_date.getFullYear() - date.getFullYear()
+            list[i].time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
+            /* Meses */
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+            var dif = current_date.getMonth() - date.getMonth();
+            list[i].time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
+            /* Dias */
+          } else if((current_date.getDate() - date.getDate()) == 0 ){
             if((current_date.getHours() - date.getHours()) == 0 ){
               if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
                 list[i].time = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
@@ -454,6 +436,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '<a href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
+      /* Function that handles paging tweets*/
+      toDisplay: function(){
+        var tweets = new Array();
+        if (this.events.length - this.index >= 20){
+          for(i = 0; i<this.index+20;i++){
+            tweets[i] = this.events[i];
+          }
+          this.index += 20;
+          if (this.events.length - this.index < 20)
+            this.show = false;
+          var t = this.$.content;
+          t.events = tweets;
+        }
+      },
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(file) {
         return "language/" + file; 
@@ -479,6 +475,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _withoutStatus: function(status) {
         return !status; 
       }
+
     })
   </script>
 </dom-module>
