@@ -182,7 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-material>
       <!-- Timeline box -->
       <div id="contain">
-        <template is="dom-repeat" items="{{events}}">
+        <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter">
           <ul class="box horizontal layout ">
             <!-- Profile picture -->
             <iron-icon src="{{item.user.profile_image_url_https}}" class="imgEvent">
@@ -213,7 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </ul>
         </template>
         <template if="{{show}}" is="dom-if">
-          <ul class="box button" on-click="toDisplay()">
+          <ul class="box button" on-click="toDisplay">
             <span>{{data.load_more}}</span>
           </ul>
         </template>
@@ -228,7 +228,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         index: {
           type: Number,
-          value: 0
+          value: 5
         },
         show: {
           type: Boolean,
@@ -317,11 +317,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.requestLanguage.generateRequest();
         }
       },
+      observers: ["renderTemplate(index, events.*)"],
+      renderTemplate: function(index, events) {
+        this.$.tweets.render();
+      },
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
         var parsed = this.parser(this._changeTime(detail.response));
         this.set('events',parsed);
-/*        for (i=0;i<parsed.length;i++){
+        /*        for (i=0;i<parsed.length;i++){
           this.push('events', parsed[i]);
         }*/
       },
@@ -428,16 +432,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /* Function that handles paging tweets*/
       toDisplay: function(){
-        var tweets = new Array();
-        if (this.events.length - this.index >= 20){
-          for(i = 0; i<this.index+20;i++){
-            tweets[i] = this.events[i];
-          }
-          this.index += 20;
-          if (this.events.length - this.index < 20)
+        if (this.index >= this.events.length) {
+          this.show = false;
+        } else {
+          this.index+=20;
+          if (this.index >= this.events.length) {
             this.show = false;
-          t.events = tweets;
+          }
         }
+        
       },
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(file) {
@@ -464,6 +467,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _withoutStatus: function(status) {
         return !status; 
       },
+      _filter: function(item){
+        var dentro = false;
+        for (i=0;i<this.events.length && i<this.index && !dentro;i++) {
+          if (this.events[i].id === item.id)
+            dentro = true;
+        }
+        return dentro;
+      }
     })
   </script>
 </dom-module>
