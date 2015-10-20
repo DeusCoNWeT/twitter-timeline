@@ -16,140 +16,141 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/paper-material/paper-material.html">
 <link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-
-
 
 
 <dom-module id="twitter-timeline">
+  <style is="custom-style">
+    @font-face {
+      font-family: HelveticaNeue;
+      src: url('font/HelveticaNeueLTStd-Ex.otf');
+    }
+    :host{
+      display: inline-block;
+    }
+
+    .box {
+      border: 1px solid #d0f0f0;
+      border-bottom: 1px solid #d0f0f0;
+      border-left: 1px solid #d0f0f0;
+      max-width: 400px;
+      min-width: 350px;
+      padding:10px 5px;
+      margin:0;
+      font-size: 14px;
+      background: #fff; /* Old browsers */
+
+
+
+    }
+
+    #header {
+      background: #55acee; /* Old browsers */
+      color:#fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-family: 'Helvetica',sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 3px 8px;
+    }
+
+    #header > p {
+      text-align:center;
+      padding-left:50px;
+    }
+    #contain {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+    #end {
+      background: #55acee;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      height: 2px;
+    }
+
+    .imgEvent {
+      float: left;
+      width:50px;
+      height:50px;
+      margin: 2px 15px;
+    }
+
+    .imgEvent > div {
+      border-radius: 20%;
+    }
+
+    .fullname {
+      font-weight: bold;
+      color: #292f33;
+    }
+
+    .fullname:hover{
+      color: #1E9999;
+      text-decoration:underline;
+    }
+
+    .username {
+      font-size: 13px;
+      color: #8899a6;
+    }
+
+    .nounderline {
+      text-decoration:none;
+      margin-right: 5px;
+    }
+
+    .time {
+      font-size: 13px;
+      color: #8899a6;
+    }
+
+    .time:hover{
+      color: #1E9999;
+      text-decoration: underline;
+    }
+
+    .text {
+      font-size: 13px;
+      font-family: HelveticaNeue,Helvetica,Arial,sans-serif;
+      margin:5px 0px;
+    }
+
+    .button{
+      background: #fff;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      font-family:'Helvetica','sans-serif';
+      color: #55acee;
+      font-style: oblique;
+      transition: background .2s linear, border-radius 1s ease-in 1s;
+    }
+    .button:hover {
+      background: #55acee;
+      color: #fff;
+    }
+    ::-webkit-scrollbar {
+      width: 4px;
+      background: #b9b9b9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #55acee;
+      -webkit-border-radius: 1ex;
+    }
+    .refresh {
+      text-align: right;
+    }
+
+    .refresh_button {
+      height: 28px;
+      width: 28px;
+      padding:0;
+      margin:auto;
+    }
+  </style>
   <template>
-    <style is="custom-style">
-      :host{
-        display: inline-block;
-      }
-
-      .box {
-        border: 1px solid #d0f0f0;
-        border-bottom: 1px solid #d0f0f0;
-        border-left: 1px solid #d0f0f0;
-        max-width: 400px;
-        min-width: 350px;
-        padding:10px 5px;
-        margin:0;
-        font-size: 14px;
-        background: #fff; /* Old browsers */
-
-      }
-
-      #header {
-        background: #55acee; /* Old browsers */
-        color:#fff;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        font-family: 'Helvetica',sans-serif;
-        font-weight: 800;
-        font-size: 16px;
-        padding: 3px 0px;
-      }
-
-      #header > p {
-        text-align:center;
-        padding-left:50px;
-      }
-      #contain {
-        overflow-y: auto;
-        max-height: 400px;
-      }
-      #end {
-        background: #55acee;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        height: 2px;
-      }
-
-      .imgEvent {
-        float: left;
-        width:50px;
-        height:50px;
-        margin: 2px 15px;
-      }
-
-      .imgEvent > div {
-        border-radius: 20%;
-      }
-
-      .fullname {
-        font-weight: bold;
-        color: #292f33;
-      }
-
-      .fullname:hover{
-        color: #1E9999;
-        text-decoration:underline;
-      }
-
-      .username {
-        font-size: 13px;
-        color: #8899a6;
-      }
-
-      .nounderline {
-        text-decoration:none;
-        margin-right: 5px;
-      }
-
-      .time {
-        font-size: 13px;
-        color: #8899a6;
-      }
-
-      .time:hover{
-        color: #1E9999;
-        text-decoration: underline;
-      }
-
-      .text {
-        font-size: 14px;
-        font-family: sans-serif;
-        margin:5px 0px;
-      }
-
-      .button{
-        background: #fff;
-        cursor: pointer;
-        text-align: center;
-        font-size: 14px;
-        font-family:'Helvetica','sans-serif';
-        color: #55acee;
-        font-style: oblique;
-        transition: background .2s linear, border-radius 1s ease-in 1s;
-      }
-      .button:hover {
-        background: #55acee;
-        color: #fff;
-      }
-      .prueba {
-        color: red;
-        text-decoration: none;
-      }
-      ::-webkit-scrollbar {
-        width: 4px;
-        background: #b9b9b9;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: #55acee;
-        -webkit-border-radius: 1ex;
-      }
-      .refresh {
-        text-align: right;
-      }
-
-      .refresh_button {
-        text-align: right;
-        padding-bottom: 10px;
-      }
-    </style>
     <!-- Request to the API. Tokens are necessary -->
     <iron-ajax 
                id="requestTimeline"
@@ -181,7 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-material>
       <!-- Timeline box -->
       <div id="contain">
-        <template id="content" is="dom-repeat" items="{{events}}">
+        <template is="dom-repeat" items="{{events}}">
           <ul class="box horizontal layout ">
             <!-- Profile picture -->
             <iron-icon src="{{item.user.profile_image_url_https}}" class="imgEvent">
@@ -247,7 +248,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         language: {
           type: String,
           value: "es",
-          notify: true,
           reflectToAttribute: true,
           observer: "languageChanged"
         },
@@ -299,22 +299,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         events: {
           type: Array,
+          value: [],
           notify: true
         }
       },
-      attached: function(event, detail) {
-        if (this.accessToken && this.endpoint){
-          if(this.language == 'es'){
-            this.idiom = 'es_es.json'
-          }else if(this.language == 'en'){
-            this.idiom = 'en_en.json'
-          }
-          this.$.requestLanguage.generateRequest();
-        }
-      },
 
-      /* Observers */
-      languageChanged: function(oldVal, newVal) {
+      /* Language observer */
+      languageChanged: function(newVal, oldValue) {
         if(newVal === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
@@ -326,29 +317,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.requestLanguage.generateRequest();
         }
       },
-
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
-        this.events = this.parser(this.changeTime(detail.response));
+        var parsed = this.parser(this._changeTime(detail.response));
+        this.set('events',parsed);
+/*        for (i=0;i<parsed.length;i++){
+          this.push('events', parsed[i]);
+        }*/
       },
       _language_response: function(event, detail){
         this.data = detail.response;
-        if(!this.events){
+        /* If its a new request, we set events to new value*/
+        if(this.events.length === 0){
           this.$.requestTimeline.generateRequest();
           var back = this
-          window.setInterval(
-            function() {
-              back.$.requestTimeline.generateRequest();
-            }, this.refresh_time
-          );
-        }
-        else{
-          this.events = this.changeTime(this.events)
-          var tweets = new Array();
-          for(i = 0; i < this.events.length; i++){
-            tweets[i]=this.events[i]
+          window.setInterval(function(){back.$.requestTimeline.generateRequest();}, back.refresh_time);
+        } else{
+          /* Else we had elements, we change events.*.time*/
+          var newEvents = this._changeTime(this.splice('events',0,this.events.length));
+          for (i=0;i<newEvents.length;i++){
+            this.push('events', newEvents[i])
           }
-          this.events = tweets;
+
         }
       },
       /* Function that refresh the timeline */
@@ -356,7 +346,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.requestTimeline.generateRequest();
       },
       /* Function that displays the date when the tweets was published */
-      changeTime: function(list){
+      _changeTime: function(list){
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
           var current_date = new Date();
@@ -419,21 +409,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* URLs parser */
       parseURL: function(tweet) {
         return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
-          return '<a href='+url+' target="_blank">'+url+'</a>'
+          return '<a style="color:rgb(57, 145, 212)" href='+url+' target="_blank">'+url+'</a>'
         })
       },
       /* Usernames parser */
       parseUsername: function(tweet) {
         return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
           var username = u.replace("@","")
-          return '<a href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
+          return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
         })
       },
       /* Hashtags parser */
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
-          return '<a href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
+          return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
       /* Function that handles paging tweets*/
@@ -446,7 +436,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.index += 20;
           if (this.events.length - this.index < 20)
             this.show = false;
-          var t = this.$.content;
           t.events = tweets;
         }
       },
@@ -474,8 +463,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _withoutStatus: function(status) {
         return !status; 
-      }
-
+      },
     })
   </script>
 </dom-module>
