@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       border-left: 1px solid #d0f0f0;
       max-width: 400px;
       min-width: 350px;
-      padding:10px 5px;
+      padding:7px 5px;
       margin:0;
       font-size: 14px;
       background: #fff; /* Old browsers */
@@ -44,7 +44,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     #header {
-      background: #55acee; /* Old browsers */
+      background: rgb(5,171,224);
+      background: -moz-linear-gradient(45deg,  rgba(5,171,224,1) 0%, rgba(78,178,224,1) 60%, rgba(5,171,224,1) 100%);
+      background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(5,171,224,1)), color-stop(60%,rgba(78,178,224,1)), color-stop(100%,rgba(5,171,224,1)));
+      background: -webkit-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+      background: -o-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+      background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+      background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
+
       color:#fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
@@ -76,8 +84,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin: 2px 15px;
     }
 
-    .imgEvent > div {
-      border-radius: 20%;
+    .imgEvent /deep/ img {
+      border-radius: 10%;
     }
 
     .fullname {
@@ -182,7 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-material>
       <!-- Timeline box -->
       <div id="contain">
-        <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter">
+        <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter" observe="time item.time">
           <ul class="box horizontal layout ">
             <!-- Profile picture -->
             <iron-icon src="{{item.user.profile_image_url_https}}" class="imgEvent">
@@ -228,7 +236,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         index: {
           type: Number,
-          value: 5
+          value: 20,
+          observer:"renderTemplate",
+          reflectToAttribute: true
         },
         show: {
           type: Boolean,
@@ -317,17 +327,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.requestLanguage.generateRequest();
         }
       },
-      observers: ["renderTemplate(index, events.*)"],
       renderTemplate: function(index, events) {
         this.$.tweets.render();
       },
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
-        var parsed = this.parser(this._changeTime(detail.response));
+        var parsed = this.parser(detail.response);
         this.set('events',parsed);
-        /*        for (i=0;i<parsed.length;i++){
-          this.push('events', parsed[i]);
-        }*/
+        this._changeTime(this.events);
       },
       _language_response: function(event, detail){
         this.data = detail.response;
@@ -338,11 +345,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           window.setInterval(function(){back.$.requestTimeline.generateRequest();}, back.refresh_time);
         } else{
           /* Else we had elements, we change events.*.time*/
-          var newEvents = this._changeTime(this.splice('events',0,this.events.length));
-          for (i=0;i<newEvents.length;i++){
-            this.push('events', newEvents[i])
-          }
-
+          this._changeTime(this.events);
         }
       },
       /* Function that refresh the timeline */
@@ -354,45 +357,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
           var current_date = new Date();
+          var time;
           /* Años*/
           if ((current_date.getFullYear() - date.getFullYear()) != 0) {
             var dif = current_date.getFullYear() - date.getFullYear()
-            list[i].time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
+            time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
             /* Meses */
           } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
             var dif = current_date.getMonth() - date.getMonth();
-            list[i].time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
+            time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
             /* Dias */
           } else if((current_date.getDate() - date.getDate()) == 0 ){
             if((current_date.getHours() - date.getHours()) == 0 ){
               if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-                list[i].time = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
+
+                time = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
               }
               else{
-                list[i].time = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
+                time = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
               }
             }
             else{
-              if (current_date.getHours() - date.getHours() == 1)
-                list[i].time = current_date.getHours() - date.getHours()+" "+this.data.hour;
-              else
-                list[i].time = current_date.getHours() - date.getHours()+" "+this.data.hours;
+              if (current_date.getHours() - date.getHours() == 1) {
+                time = current_date.getHours() - date.getHours()+" "+this.data.hour;
+              }else {
+                time = current_date.getHours() - date.getHours()+" "+this.data.hours;
+              }
             }
           }
           else if( ((current_date.getDate() - date.getDate()) < 15) && ( (current_date.getDate() - date.getDate()) > 0)){
             if( (current_date.getDate() - date.getDate()) == 1){
-              list[i].time = current_date.getDate() - date.getDate()+" "+this.data.day
+              time = current_date.getDate() - date.getDate()+" "+this.data.day
             }
             else{
-              list[i].time = current_date.getDate() - date.getDate()+" "+this.data.days
+              time = current_date.getDate() - date.getDate()+" "+this.data.days
             }
           }
           else{
             var month = [this.data.january,this.data.february,this.data.march,this.data.april, this.data.may,this.data.june,this.data.july,this.data.august,this.data.september,this.data.october,this.data.november,this.data.december];
-            list[i].time = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
+            time = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
+
           }
+          this.set("events." + i + ".time", time);
+
         }
-        return list;
       },
       /* Function that parse the tweet's text */
       parser: function(list){
@@ -440,7 +448,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.show = false;
           }
         }
-        
+
       },
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(file) {
