@@ -1,4 +1,4 @@
-application: twitter-wall-app 
+application: twitter-timeline-app 
 version: 2
 runtime: python27
 threadsafe: true

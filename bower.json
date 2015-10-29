@@ -1,19 +1,19 @@
 {
-  "name": "twitter-wall",
+  "name": "twitter-timeline",
   "version": "2.0.0",
   "authors": [
     "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
-  "description": "Web component for twitter wall",
+  "description": "Web component for twitter timeline",
   "keywords": [
     "web-compoments",
     "twitter",
-    "wall",
+    "timeline",
     "polymer"
   ],
-  "main": "twitter-wall.html",
+  "main": "twitter-timeline.html",
   "license": "MIT",
-  "homepage": "https://github.com/JuanFryS/twitter-wall",
+  "homepage": "https://github.com/JuanFryS/twitter-timeline",
   "ignore": [
     "/.*",
     "/tests/"

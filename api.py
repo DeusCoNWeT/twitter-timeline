@@ -20,7 +20,7 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
         client = oauth.TwitterClient(consumer_key, consumer_secret, "oob")
 
         respuesta = client.make_request(
-            "https://api.twitter.com/1.1/statuses/home_wall.json",
+            "https://api.twitter.com/1.1/statuses/home_timeline.json",
             token=access_token, secret=secret_token,additional_params={"count": count}, protected=True)
         
         self.response.write(respuesta.content)

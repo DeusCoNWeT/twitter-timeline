@@ -18,7 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-<dom-module id="twitter-wall">
+<dom-module id="twitter-timeline">
   <style is="custom-style">
     @font-face {
       font-family: HelveticaNeue;
@@ -161,10 +161,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <!-- Request to the API. Tokens are necessary -->
     <iron-ajax 
-               id="requestwall"
+               id="requesttimeline"
                url="{{ endpoint }}"
                method="GET"
-               params="{{wall_params}}"
+               params="{{timeline_params}}"
                handleAs='json'
                on-response="_response"
                >
@@ -188,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-icon-button>
         </div>
       </paper-material>
-      <!-- wall box -->
+      <!-- timeline box -->
       <div id="contain">
         <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter" observe="time item.time">
           <ul class="box horizontal layout">
@@ -232,7 +232,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     Polymer({
-      is:"twitter-wall",
+      is:"twitter-timeline",
       properties: {
         index: {
           type: Number,
@@ -303,9 +303,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           computed: "_calculateLanguageUrl(idiom)"
         },
-        wall_params: {
+        timeline_params: {
           type: String,
-          computed: "_calculatewallParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
+          computed: "_calculatetimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
         },
         events: {
           type: Array,
@@ -340,17 +340,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.data = detail.response;
         /* If its a new request, we set events to new value*/
         if(this.events.length === 0){
-          this.$.requestwall.generateRequest();
+          this.$.requesttimeline.generateRequest();
           var back = this
-          window.setInterval(function(){back.$.requestwall.generateRequest();}, back.refresh_time);
+          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
         } else{
           /* Else we had elements, we change events.*.time*/
           this._changeTime(this.events);
         }
       },
-      /* Function that refresh the wall */
+      /* Function that refresh the timeline */
       refresh_func: function(){
-        this.$.requestwall.generateRequest();
+        this.$.requesttimeline.generateRequest();
       },
       /* Function that displays the date when the tweets was published */
       _changeTime: function(list){
@@ -454,7 +454,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _calculateLanguageUrl: function(file) {
         return "language/" + file; 
       },
-      _calculatewallParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
         return {
           access_token: accessToken,
           secret_token: secretToken,
