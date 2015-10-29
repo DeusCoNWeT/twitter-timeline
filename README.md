@@ -1,2 +1,2 @@
-# twitter-timeline
-Web component for obtain the timeline of Twitter using Polymer
+# twitter-wall
+Web component for obtain the wall of Twitter using Polymer

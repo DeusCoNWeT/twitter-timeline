@@ -8,17 +8,17 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-ajax/iron-ajax.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-material/paper-material.html">
+<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
 
 
 
-<dom-module id="twitter-timeline">
+<dom-module id="twitter-wall">
   <style is="custom-style">
     @font-face {
       font-family: HelveticaNeue;
@@ -161,10 +161,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <!-- Request to the API. Tokens are necessary -->
     <iron-ajax 
-               id="requestTimeline"
+               id="requestwall"
                url="{{ endpoint }}"
                method="GET"
-               params="{{timeline_params}}"
+               params="{{wall_params}}"
                handleAs='json'
                on-response="_response"
                >
@@ -188,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-icon-button>
         </div>
       </paper-material>
-      <!-- Timeline box -->
+      <!-- wall box -->
       <div id="contain">
         <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter" observe="time item.time">
           <ul class="box horizontal layout">
@@ -232,7 +232,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     Polymer({
-      is:"twitter-timeline",
+      is:"twitter-wall",
       properties: {
         index: {
           type: Number,
@@ -303,9 +303,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           computed: "_calculateLanguageUrl(idiom)"
         },
-        timeline_params: {
+        wall_params: {
           type: String,
-          computed: "_calculateTimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
+          computed: "_calculatewallParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
         },
         events: {
           type: Array,
@@ -340,17 +340,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.data = detail.response;
         /* If its a new request, we set events to new value*/
         if(this.events.length === 0){
-          this.$.requestTimeline.generateRequest();
+          this.$.requestwall.generateRequest();
           var back = this
-          window.setInterval(function(){back.$.requestTimeline.generateRequest();}, back.refresh_time);
+          window.setInterval(function(){back.$.requestwall.generateRequest();}, back.refresh_time);
         } else{
           /* Else we had elements, we change events.*.time*/
           this._changeTime(this.events);
         }
       },
-      /* Function that refresh the timeline */
+      /* Function that refresh the wall */
       refresh_func: function(){
-        this.$.requestTimeline.generateRequest();
+        this.$.requestwall.generateRequest();
       },
       /* Function that displays the date when the tweets was published */
       _changeTime: function(list){
@@ -454,7 +454,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _calculateLanguageUrl: function(file) {
         return "language/" + file; 
       },
-      _calculateTimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+      _calculatewallParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
         return {
           access_token: accessToken,
           secret_token: secretToken,
