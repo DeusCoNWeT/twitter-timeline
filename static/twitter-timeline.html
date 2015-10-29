@@ -8,13 +8,14 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../paper-material/paper-material.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
 
 
 
@@ -299,9 +300,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           reflectToAttribute: true 
         },
+        component_base: {
+          type: String,
+          value:"",
+          reflectToAttribute: true
+        },
         language_url: {
           type: String,
-          computed: "_calculateLanguageUrl(idiom)"
+          computed: "_calculateLanguageUrl(component_base, idiom)"
         },
         timeline_params: {
           type: String,
@@ -313,17 +319,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         }
       },
-
+      attached: function(){
+        this.$.requestLanguage.generateRequest();
+      },
       /* Language observer */
       languageChanged: function(newVal, oldValue) {
         if(newVal === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
-          this.$.requestLanguage.generateRequest();
         }
         else if(newVal === "es"){
           this.language = "es";
           this.idiom = "es_es.json"
+        }
+        if (this.component_base || this.component_base == "") {
           this.$.requestLanguage.generateRequest();
         }
       },
@@ -451,8 +460,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
       /* Calculate endpoint for request url */
-      _calculateLanguageUrl: function(file) {
-        return "language/" + file; 
+      _calculateLanguageUrl: function(component_directory, file) {
+        return component_directory + "language/" + file; 
       },
       _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
         return {
