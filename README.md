@@ -15,18 +15,4 @@ It is a [Polymer](https://www.polymer-project.org/1.0/) component for obtain the
 | count            | The number of tweets per request.                                                                                                           | Optional Default: 200  `<Integer>` |
 | language            | The language in which you want to get the tweets (only allow `en` (english) and `es` (spanish) at the moment)                                | Optional Default: es `<String>`   |
 
-## Parser Status
 
-- [x] PushEvent
-- [x] WatchEvent
-- [x] CreateEvent
-- [x] PullRequestEvent
-- [ ] IssuesEvent
-- [ ] MemberEvent
-- [ ] ReleaseEvent
-- [ ] CommitCommentEvent
-- [ ] DelateEvent
-- [ ] GollumEvent
-- [ ] IssueCommentEvent
-- [ ] PublicEvent
-- [ ] PullRequestReviewCommentEvent
