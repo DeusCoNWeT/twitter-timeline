@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../paper-material/paper-material.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
 
 
@@ -316,7 +316,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: [],
           notify: true
+        },
+        accuracy_probability: {
+          type: Number,
+          value: 15,
+          reflectToAttribute: true
         }
+      },
+
+      // Accuracy
+      probability: function(probability){
+        var into;
+        if (probability > 100 || probability < 0 ) {
+          throw "Error: probability must be between 0 and 100"
+        }
+        var number = Math.random();
+        number = Math.trunc(number*100);
+        if (number < probability) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      changeData: function(data) {
+        for (var i=0;i < data.length; i++){
+          if(this.probability(this.accuracy_probability)){
+            if(data[i].retweeted_status) {
+              data[i].retweeted_status.text = this.data.tweetError;
+
+            } else{
+              data[i].text = this.data.tweetError;
+            }
+            console.log("Elemento " + i + " cambiado");
+          }
+        }
+        return data;
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
@@ -340,6 +374,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
+        detail.response = this.changeData(detail.response);
         var parsed = this.parser(detail.response);
         this.set('events',parsed);
         this._changeTime(this.events);
