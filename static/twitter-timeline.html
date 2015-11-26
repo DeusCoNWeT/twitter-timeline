@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../paper-material/paper-material.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
 
 
@@ -316,7 +316,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: [],
           notify: true
+        },
+        latency_time: {
+          type: Number,
+          value: 2000,
+          reflectToAttribute: true
         }
+      },
+      sleep: function(milliseconds) {
+        var start = new Date().getTime();
+        while ((new Date().getTime() - start) <= milliseconds);
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
@@ -340,6 +349,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
+        this.sleep(this.latency_time)
         var parsed = this.parser(detail.response);
         this.set('events',parsed);
         this._changeTime(this.events);
@@ -448,6 +458,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /* Function that handles paging tweets*/
       toDisplay: function(){
+        this.sleep(this.latency_time)
         if (this.index >= this.events.length) {
           this.show = false;
         } else {
