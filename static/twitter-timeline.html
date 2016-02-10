@@ -8,16 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../paper-material/paper-material.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
-
-
-
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
 <dom-module id="twitter-timeline">
   <style is="custom-style">
@@ -25,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-family: HelveticaNeue;
       src: url('font/HelveticaNeueLTStd-Ex.otf');
     }
+
     :host{
       display: inline-block;
     }
@@ -39,9 +37,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin:0;
       font-size: 14px;
       background: #fff; /* Old browsers */
-
-
-
     }
 
     #header {
@@ -53,7 +48,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
       background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
-
       color:#fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
@@ -67,10 +61,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       text-align:center;
       padding-left:50px;
     }
+
     #contain {
       overflow-y: auto;
       max-height: 400px;
     }
+
     #end {
       background: #55acee;
       border-bottom-left-radius: 5px;
@@ -135,10 +131,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-style: oblique;
       transition: background .2s linear, border-radius 1s ease-in 1s;
     }
+
     .button:hover {
       background: #55acee;
       color: #fff;
     }
+
     ::-webkit-scrollbar {
       width: 4px;
       background: #b9b9b9;
@@ -148,6 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: #55acee;
       -webkit-border-radius: 1ex;
     }
+
     .refresh {
       text-align: right;
     }
@@ -184,8 +183,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Header -->
       <paper-material>
         <div id ="header" class="horizontal center-justified layout">
-          <p class="flex">{{data.title}}</p>
-          <paper-icon-button class="refresh_button" title="{{data.refresh}}" icon="refresh" on-click="refresh_func">
+          <p class="flex">{{language_data.title}}</p>
+          <paper-icon-button class="refresh_button" title="{{language_data.refresh}}" icon="refresh" on-click="refresh_func">
           </paper-icon-button>
         </div>
       </paper-material>
@@ -223,7 +222,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
         <template if="{{show}}" is="dom-if">
           <ul class="box button" on-click="toDisplay">
-            <span>{{data.load_more}}</span>
+            <span>{{language_data.load_more}}</span>
           </ul>
         </template>
       </div>
@@ -271,7 +270,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         /*1 seg = 1000*/
         refresh_time: {
           type: Number,
-          value: 60000,
+          value: 600000,
           notify: true,
           reflectToAttribute: true
         },
@@ -345,7 +344,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._changeTime(this.events);
       },
       _language_response: function(event, detail){
-        this.data = detail.response;
+        this.language_data = detail.response;
         /* If its a new request, we set events to new value*/
         if(this.events.length === 0){
           this.$.requesttimeline.generateRequest();
@@ -361,6 +360,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.requesttimeline.generateRequest();
       },
       /* Function that displays the date when the tweets was published */
+
+
       _changeTime: function(list){
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
@@ -369,47 +370,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           /* Años*/
           if ((current_date.getFullYear() - date.getFullYear()) != 0) {
             var dif = current_date.getFullYear() - date.getFullYear()
-            time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
+            time = dif==1 ? dif + " " + this.data.year : dif + " " + this.language_data.years;
             /* Meses */
           } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
             var dif = current_date.getMonth() - date.getMonth();
-            time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
+            time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
             /* Dias */
           } else if((current_date.getDate() - date.getDate()) == 0 ){
             if((current_date.getHours() - date.getHours()) == 0 ){
               if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-
-                time = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
+                time = current_date.getSeconds() - date.getSeconds()+" "+this.language_data.seconds
               }
               else{
-                time = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
+                time = current_date.getMinutes() - date.getMinutes()+" "+this.language_data.minutes
               }
             }
             else{
               if (current_date.getHours() - date.getHours() == 1) {
-                time = current_date.getHours() - date.getHours()+" "+this.data.hour;
+                time = current_date.getHours() - date.getHours()+" "+this.language_data.hour;
               }else {
-                time = current_date.getHours() - date.getHours()+" "+this.data.hours;
+                time = current_date.getHours() - date.getHours()+" "+this.language_data.hours;
               }
             }
           }
           else if( ((current_date.getDate() - date.getDate()) < 15) && ( (current_date.getDate() - date.getDate()) > 0)){
             if( (current_date.getDate() - date.getDate()) == 1){
-              time = current_date.getDate() - date.getDate()+" "+this.data.day
+              time = current_date.getDate() - date.getDate()+" "+this.language_data.day
             }
             else{
-              time = current_date.getDate() - date.getDate()+" "+this.data.days
+              time = current_date.getDate() - date.getDate()+" "+this.language_data.days
             }
           }
           else{
-            var month = [this.data.january,this.data.february,this.data.march,this.data.april, this.data.may,this.data.june,this.data.july,this.data.august,this.data.september,this.data.october,this.data.november,this.data.december];
-            time = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
-
+            var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
+            time = date.getDate()+" "+this.language_data.of+" "+month[date.getMonth()]+" "+this.language_data.of+" "+date.getFullYear();
           }
           this.set("events." + i + ".time", time);
-
         }
       },
+
       /* Function that parse the tweet's text */
       parser: function(list){
         for(i = 0; i < list.length; i++){
@@ -426,12 +425,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         return list;
       },
+
       /* URLs parser */
       parseURL: function(tweet) {
         return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
           return '<a style="color:rgb(57, 145, 212)" href='+url+' target="_blank">'+url+'</a>'
         })
       },
+
       /* Usernames parser */
       parseUsername: function(tweet) {
         return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
@@ -439,6 +440,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
         })
       },
+
       /* Hashtags parser */
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
@@ -446,6 +448,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
+
       /* Function that handles paging tweets*/
       toDisplay: function(){
         if (this.index >= this.events.length) {
@@ -456,8 +459,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.show = false;
           }
         }
-
       },
+
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(component_directory, file) {
         return component_directory + "language/" + file; 
@@ -471,18 +474,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           count: count
         };
       },
+
       _getUserurl: function(user) {
         return "https://twitter.com/" + user;
       },
+
       _getStatusUrl: function(id, id_str) {
         return "https://twitter.com/" + id + "/status/" + id_str;
       },
+
       _getTextId: function(index) {
         return "Text" + index; 
       },
+
       _withoutStatus: function(status) {
         return !status; 
       },
+
       _filter: function(item){
         var dentro = false;
         for (i=0;i<this.events.length && i<this.index && !dentro;i++) {
