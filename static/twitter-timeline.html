@@ -315,7 +315,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: [],
           notify: true
-        }
+        },
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
@@ -463,6 +463,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(component_directory, file) {
+        console.log(component_directory + "language/" + file);
         return component_directory + "language/" + file; 
       },
       _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
