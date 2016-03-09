@@ -17,8 +17,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
 
-
-
 <dom-module id="twitter-timeline">
   <style is="custom-style">
     @font-face {
@@ -166,6 +164,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{ endpoint }}"
                method="GET"
                params="{{timeline_params}}"
+               headers="{'Timing-Allow-origin': '*'}"
                handleAs='json'
                on-response="_response"
                >
@@ -175,6 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requestLanguage"
                url="{{language_url}}"
                method="GET"
+               headers="{'Timing-Allow-origin': '*'}"
                handleAs="json"
                on-response="_language_response"
                >
