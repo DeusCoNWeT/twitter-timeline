@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
 <dom-module id="twitter-timeline">
   <style is="custom-style">
@@ -231,7 +231,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div id="end"></div>
     </paper-material>
   </template>
-
   <script>
     Polymer({
       is:"twitter-timeline",
@@ -245,12 +244,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: true,
         },
-
         since_id: {
           type: String,
           value:""
         },
-
         endpoint: {
           type: String,
           notify: true,
@@ -268,7 +265,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           reflectToAttribute: true
         },
-
         /*1 seg = 1000*/
         refresh_time: {
           type: Number,
@@ -319,9 +315,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         },
       },
+
       attached: function(){
         this.$.requestLanguage.generateRequest();
       },
+
+      _calculateLanguageUrl: function(component_directory, file) {
+        return component_directory + "language/" + file; 
+      },
+
+      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+        return {
+          access_token: accessToken,
+          secret_token: secretToken,
+          consumer_key: consumerKey,
+          consumer_secret: consumerSecret,
+          count: count
+        };
+      },
+
+      _getUserurl: function(user) {
+        return "https://twitter.com/" + user;
+      },
+
+      _getStatusUrl: function(id, id_str) {
+        return "https://twitter.com/" + id + "/status/" + id_str;
+      },
+
+      _getTextId: function(index) {
+        return "Text" + index; 
+      },
+
+      _withoutStatus: function(status) {
+        return !status; 
+      },
+
+      _filter: function(item){
+        var dentro = false;
+        for (i=0;i<this.events.length && i<this.index && !dentro;i++) {
+          if (this.events[i].id === item.id)
+            dentro = true;
+        }
+        return dentro;
+      },
+
       /* Language observer */
       languageChanged: function(newVal, oldValue) {
         if(newVal === "en"){
@@ -336,15 +373,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.requestLanguage.generateRequest();
         }
       },
+
       renderTemplate: function(index, events) {
         this.$.tweets.render();
       },
+
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
         var parsed = this.parser(detail.response);
         this.set('events',parsed);
         this._changeTime(this.events);
       },
+
       _language_response: function(event, detail){
         this.language_data = detail.response;
         /* If its a new request, we set events to new value*/
@@ -357,13 +397,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._changeTime(this.events);
         }
       },
+
       /* Function that refresh the timeline */
       refresh_func: function(){
         this.$.requesttimeline.generateRequest();
       },
+
       /* Function that displays the date when the tweets was published */
-
-
       _changeTime: function(list){
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
@@ -435,7 +475,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       },
 
-      /* Usernames parser */
       parseUsername: function(tweet) {
         return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
           var username = u.replace("@","")
@@ -443,7 +482,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       },
 
-      /* Hashtags parser */
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
@@ -461,47 +499,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.show = false;
           }
         }
-      },
+      }
 
       /* Calculate endpoint for request url */
-      _calculateLanguageUrl: function(component_directory, file) {
-        console.log(component_directory + "language/" + file);
-        return component_directory + "language/" + file; 
-      },
-      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
-        return {
-          access_token: accessToken,
-          secret_token: secretToken,
-          consumer_key: consumerKey,
-          consumer_secret: consumerSecret,
-          count: count
-        };
-      },
 
-      _getUserurl: function(user) {
-        return "https://twitter.com/" + user;
-      },
-
-      _getStatusUrl: function(id, id_str) {
-        return "https://twitter.com/" + id + "/status/" + id_str;
-      },
-
-      _getTextId: function(index) {
-        return "Text" + index; 
-      },
-
-      _withoutStatus: function(status) {
-        return !status; 
-      },
-
-      _filter: function(item){
-        var dentro = false;
-        for (i=0;i<this.events.length && i<this.index && !dentro;i++) {
-          if (this.events[i].id === item.id)
-            dentro = true;
-        }
-        return dentro;
-      }
     })
   </script>
 </dom-module>

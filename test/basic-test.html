@@ -1,0 +1,91 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../static/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../static/bower_components/web-component-tester/browser.js"></script>
+    <script src="../static/bower_components/test-fixture/test-fixture-mocha.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../static/twitter-timeline.html">
+
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id='timeline'>
+      <template>
+        <twitter-timeline endpoint="http://twitter-timeline-app.appspot.com/oauth/twitter" access-token="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf" secret-token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock" consumer-key="J4bjMZmJ6hh7r0wlG9H90cgEe" consumer-secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200" language="{{language}}" component_base="./">
+        </twitter-timeline>
+      </template>
+    </test-fixture>
+    <script>
+
+      /*
+
+      STUB -> Cambia el comportamiento de la funcion por el que se defina:
+            myEl.XXX = sinon.stub() : función vacía que no hace  nada
+            myEl.XXX = sinon.stub().returns("Lo que sea") : la funcion hace lo que está definido dentro del 'returns'.
+      ESPÍA -> Observa la función en cuestión, se ejecuta la función original.
+            var languageResponse = sinon.spy(myEl, '_language_response');
+            myEl._language_response(event, detail);
+            sinon.assert.calledOnce(languageResponse);
+            languageResponse.reset();
+            */
+
+      describe('timeline component', function(){
+        beforeEach(function(){
+          myEl.$.requesttimeline.generateRequest = sinon.stub();
+          myEl.$.requestLanguage.generateRequest = sinon.stub();
+        });
+        afterEach(function(){
+          sinon.restore();
+        });
+
+        describe('attached function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.attached);
+            done();
+          });
+          it('is called', function(done){
+            myEl.attached();
+            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
+            done();
+          });
+        });
+
+        describe('_calculateLanguageUrl function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._calculateLanguageUrl);
+            done();
+          });
+          it('returns the language url', function(done){
+            var component_directory = "./";
+            var file = "es_es.json"
+            var resp = myEl._calculateLanguageUrl(component_directory, file);
+            assert.equal(resp, "./language/es_es.json")
+            done();
+          });
+        });
+      });
+
+    </script>
+  </body>
+</html>
