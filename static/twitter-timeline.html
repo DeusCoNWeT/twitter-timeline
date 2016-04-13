@@ -257,7 +257,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "es",
           reflectToAttribute: true,
-          observer: "languageChanged"
+          observer: "_languageChanged"
         },
         count: { 
           type: Number,
@@ -360,7 +360,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /* Language observer */
-      languageChanged: function(newVal, oldValue) {
+      _languageChanged: function(newVal, oldValue) {
         if(newVal === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
@@ -391,7 +391,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(this.events.length === 0){
           this.$.requesttimeline.generateRequest();
           var back = this
-          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+          window.setInterval(function(){
+            back.$.requesttimeline.generateRequest();
+          }, back.refresh_time);
         } else{
           /* Else we had elements, we change events.*.time*/
           this._changeTime(this.events);
@@ -401,6 +403,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* Function that refresh the timeline */
       refresh_func: function(){
         this.$.requesttimeline.generateRequest();
+      },
+
+      /* Function that handles paging tweets*/
+      toDisplay: function(){
+        if (this.index >= this.events.length) {
+          this.show = false;
+        }
+        else {
+          this.index+=20;
+          if (this.index >= this.events.length) {
+            this.show = false;
+          }
+        }
       },
 
       /* Function that displays the date when the tweets was published */
@@ -453,17 +468,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /* Function that parse the tweet's text */
       parser: function(list){
-        for(i = 0; i < list.length; i++){
-          if(list[i].retweeted_status){
-            list[i].text = this.parseURL(list[i].retweeted_status.text);
-            list[i].text = this.parseUsername(list[i].text);
-            list[i].text = this.parseHashtag(list[i].text);
-          }
-          else{
-            list[i].text = this.parseURL(list[i].text);
-            list[i].text = this.parseUsername(list[i].text);
-            list[i].text = this.parseHashtag(list[i].text);
-          }
+        for(i = 0; i < list.length; i++){    
+          list[i].text = this.parseURL(list[i].text);
+          list[i].text = this.parseUsername(list[i].text);
+          list[i].text = this.parseHashtag(list[i].text);
         }
         return list;
       },
@@ -488,18 +496,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
-
-      /* Function that handles paging tweets*/
-      toDisplay: function(){
-        if (this.index >= this.events.length) {
-          this.show = false;
-        } else {
-          this.index+=20;
-          if (this.index >= this.events.length) {
-            this.show = false;
-          }
-        }
-      }
 
       /* Calculate endpoint for request url */
 
