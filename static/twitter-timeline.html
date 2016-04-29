@@ -296,14 +296,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           reflectToAttribute: true 
         },
-        component_base: {
+        component_directory: {
           type: String,
           value:"",
           reflectToAttribute: true
         },
         language_url: {
           type: String,
-          computed: "_calculateLanguageUrl(component_base, idiom)"
+          computed: "_calculateLanguageUrl(component_directory, idiom)"
         },
         timeline_params: {
           type: String,
@@ -369,7 +369,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.language = "es";
           this.idiom = "es_es.json"
         }
-        if (this.component_base || this.component_base == "") {
+        if (this.component_directory || this.component_directory == "") {
           this.$.requestLanguage.generateRequest();
         }
       },
