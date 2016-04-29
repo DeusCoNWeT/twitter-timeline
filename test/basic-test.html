@@ -371,7 +371,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
 
-        /* Revisar estos test */
         describe('_changeTime function', function(){
           beforeEach(function(){
             myEl = fixture('timeline');
@@ -381,6 +380,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isDefined(myEl._changeTime);
             done();
           });
+          it('sets the time to correct time', function(done){
+            var spy = sinon.spy(myEl, 'set');
+            myEl.language_data = language;
+            var list = [
+              {
+                "created_at" : "2016-04-29T02:46:09+0000"
+              }
+            ];
+            myEl._changeTime(list);        
+            sinon.assert.called(spy)
+            done();
+            spy.reset();
+          });
+
         });
 
         describe('parseURL function', function(){
