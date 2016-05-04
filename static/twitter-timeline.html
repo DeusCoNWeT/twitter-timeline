@@ -186,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-material>
         <div id ="header" class="horizontal center-justified layout">
           <p class="flex">{{language_data.title}}</p>
-          <paper-icon-button class="refresh_button" title="{{language_data.refresh}}" icon="refresh" on-click="refresh_func">
+          <paper-icon-button class="refresh_button" title$="{{language_data.refresh}}" icon="refresh" on-click="refresh_func">
           </paper-icon-button>
         </div>
       </paper-material>
@@ -314,6 +314,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: [],
           notify: true
         },
+        language_data: {
+          type: Array,
+          value: []
+        }
       },
 
       attached: function(){
