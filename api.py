@@ -11,6 +11,7 @@ import oauth
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
     def get(self):
+      
 # Obtención de datos desde fichero en sistema
 #      fich = open("tweets.json")
 #      fich = fich.read()
