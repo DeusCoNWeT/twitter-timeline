@@ -11,10 +11,12 @@ import oauth
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
     def get(self):
+      
 # Obtención de datos desde fichero en sistema
 #      fich = open("tweets.json")
 #      fich = fich.read()
 #      self.response.write(fich)
+
 #Obtención de datos desde servidor red social
       consumer_key = self.request.get("consumer_key", default_value="")
       consumer_secret = self.request.get("consumer_secret", default_value="")
