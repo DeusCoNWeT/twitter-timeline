@@ -16,23 +16,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/paper-material/paper-material.html">
 <link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
+
+
+
 <dom-module id="twitter-timeline">
   <style is="custom-style">
     @font-face {
       font-family: HelveticaNeue;
       src: url('font/HelveticaNeueLTStd-Ex.otf');
     }
-
     :host{
       display: inline-block;
+      color: black;
+      width: var(--twitter-timeline-width, 350px);
+      height: var(--twitter-timeline-height, 350px);
+      min-height: 350px;
+      min-width: 350px;
     }
-
+    .wrapper {
+      width: 100%;
+      height: 100%;
+      margin:0;
+      padding:0;
+    }
     .box {
       border: 1px solid #d0f0f0;
       border-bottom: 1px solid #d0f0f0;
       border-left: 1px solid #d0f0f0;
-      max-width: 400px;
-      min-width: 350px;
       padding:7px 5px;
       margin:0;
       font-size: 14px;
@@ -48,6 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
       background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
+
       color:#fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
@@ -61,12 +72,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       text-align:center;
       padding-left:50px;
     }
-
     #contain {
       overflow-y: auto;
       max-height: 400px;
     }
-
     #end {
       background: #55acee;
       border-bottom-left-radius: 5px;
@@ -131,12 +140,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-style: oblique;
       transition: background .2s linear, border-radius 1s ease-in 1s;
     }
-
     .button:hover {
       background: #55acee;
       color: #fff;
     }
-
     ::-webkit-scrollbar {
       width: 4px;
       background: #b9b9b9;
@@ -146,7 +153,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: #55acee;
       -webkit-border-radius: 1ex;
     }
-
     .refresh {
       text-align: right;
     }
@@ -160,11 +166,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </style>
   <template>
     <!-- Request to the API. Tokens are necessary -->
-    <iron-ajax 
+    <iron-ajax
                id="requesttimeline"
                url="{{ endpoint }}"
                method="GET"
-               headers="{'Timing-Allow-origin': '*'}"
                params="{{timeline_params}}"
                handleAs='json'
                on-response="_response"
@@ -175,23 +180,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requestLanguage"
                url="{{language_url}}"
                method="GET"
-               headers="{'Timing-Allow-origin': '*'}"
                handleAs="json"
                on-response="_language_response"
                >
     </iron-ajax>
 
-    <paper-material>
+    <paper-material class="wrapper vertical layout">
       <!-- Header -->
       <paper-material>
         <div id ="header" class="horizontal center-justified layout">
-          <p class="flex">{{language_data.title}}</p>
-          <paper-icon-button class="refresh_button" title$="{{language_data.refresh}}" icon="refresh" on-click="refresh_func">
+          <p class="flex">{{data.title}}</p>
+          <paper-icon-button class="refresh_button" title="{{data.refresh}}" icon="refresh" on-click="refresh_func">
           </paper-icon-button>
         </div>
       </paper-material>
       <!-- timeline box -->
-      <div id="contain">
+      <div id="contain flex">
         <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter" observe="time item.time">
           <ul class="box horizontal layout">
             <!-- Profile picture -->
@@ -224,13 +228,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
         <template if="{{show}}" is="dom-if">
           <ul class="box button" on-click="toDisplay">
-            <span>{{language_data.load_more}}</span>
+            <span>{{data.load_more}}</span>
           </ul>
         </template>
       </div>
       <div id="end"></div>
     </paper-material>
   </template>
+
   <script>
     Polymer({
       is:"twitter-timeline",
@@ -244,10 +249,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: true,
         },
+
         since_id: {
           type: String,
           value:""
         },
+
         endpoint: {
           type: String,
           notify: true,
@@ -257,18 +264,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "es",
           reflectToAttribute: true,
-          observer: "_languageChanged"
+          observer: "languageChanged"
         },
-        count: { 
+        count: {
           type: Number,
           value: 200,
           notify: true,
           reflectToAttribute: true
         },
+
         /*1 seg = 1000*/
         refresh_time: {
           type: Number,
-          value: 600000,
+          value: 100000,
           notify: true,
           reflectToAttribute: true
         },
@@ -282,28 +290,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         consumerKey: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         consumerSecret: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
-        component_directory: {
+        component_base: {
           type: String,
           value:"",
           reflectToAttribute: true
         },
         language_url: {
           type: String,
-          computed: "_calculateLanguageUrl(component_directory, idiom)"
+          computed: "_calculateLanguageUrl(component_base, idiom)"
         },
         timeline_params: {
           type: String,
@@ -313,58 +321,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: [],
           notify: true
-        },
-        language_data: {
-          type: Array,
-          value: []
         }
       },
-
       attached: function(){
         this.$.requestLanguage.generateRequest();
       },
-
-      _calculateLanguageUrl: function(component_directory, file) {
-        return component_directory + "language/" + file; 
-      },
-
-      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
-        return {
-          access_token: accessToken,
-          secret_token: secretToken,
-          consumer_key: consumerKey,
-          consumer_secret: consumerSecret,
-          count: count
-        };
-      },
-
-      _getUserurl: function(user) {
-        return "https://twitter.com/" + user;
-      },
-
-      _getStatusUrl: function(id, id_str) {
-        return "https://twitter.com/" + id + "/status/" + id_str;
-      },
-
-      _getTextId: function(index) {
-        return "Text" + index; 
-      },
-
-      _withoutStatus: function(status) {
-        return !status; 
-      },
-
-      _filter: function(item){
-        var dentro = false;
-        for (i=0;i<this.events.length && i<this.index && !dentro;i++) {
-          if (this.events[i].id === item.id)
-            dentro = true;
-        }
-        return dentro;
-      },
-
       /* Language observer */
-      _languageChanged: function(newVal, oldValue) {
+      languageChanged: function(newVal, oldValue) {
         if(newVal === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
@@ -373,55 +336,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.language = "es";
           this.idiom = "es_es.json"
         }
-        if (this.component_directory || this.component_directory == "") {
+        if (this.component_base || this.component_base == "") {
           this.$.requestLanguage.generateRequest();
         }
       },
-
       renderTemplate: function(index, events) {
         this.$.tweets.render();
       },
-
       /* This function prepares the tweets before displaying them */
       _response: function(event, detail) {
         var parsed = this.parser(detail.response);
         this.set('events',parsed);
         this._changeTime(this.events);
       },
-
       _language_response: function(event, detail){
-        this.language_data = detail.response;
+        this.data = detail.response;
         /* If its a new request, we set events to new value*/
         if(this.events.length === 0){
           this.$.requesttimeline.generateRequest();
           var back = this
-          window.setInterval(function(){
-            back.$.requesttimeline.generateRequest();
-          }, back.refresh_time);
+          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
         } else{
           /* Else we had elements, we change events.*.time*/
           this._changeTime(this.events);
         }
       },
-
       /* Function that refresh the timeline */
       refresh_func: function(){
         this.$.requesttimeline.generateRequest();
       },
-
-      /* Function that handles paging tweets*/
-      toDisplay: function(){
-        if (this.index >= this.events.length) {
-          this.show = false;
-        }
-        else {
-          this.index+=20;
-          if (this.index >= this.events.length) {
-            this.show = false;
-          }
-        }
-      },
-
       /* Function that displays the date when the tweets was published */
       _changeTime: function(list){
         for (i=0;i<list.length;i++){
@@ -431,78 +374,128 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           /* Años*/
           if ((current_date.getFullYear() - date.getFullYear()) != 0) {
             var dif = current_date.getFullYear() - date.getFullYear()
-            time = dif==1 ? dif + " " + this.data.year : dif + " " + this.language_data.years;
+            time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
             /* Meses */
-          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
             var dif = current_date.getMonth() - date.getMonth();
-            time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
+            time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
             /* Dias */
           } else if((current_date.getDate() - date.getDate()) == 0 ){
             if((current_date.getHours() - date.getHours()) == 0 ){
               if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-                time = current_date.getSeconds() - date.getSeconds()+" "+this.language_data.seconds
+
+                time = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
               }
               else{
-                time = current_date.getMinutes() - date.getMinutes()+" "+this.language_data.minutes
+                time = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
               }
             }
             else{
               if (current_date.getHours() - date.getHours() == 1) {
-                time = current_date.getHours() - date.getHours()+" "+this.language_data.hour;
+                time = current_date.getHours() - date.getHours()+" "+this.data.hour;
               }else {
-                time = current_date.getHours() - date.getHours()+" "+this.language_data.hours;
+                time = current_date.getHours() - date.getHours()+" "+this.data.hours;
               }
             }
           }
           else if( ((current_date.getDate() - date.getDate()) < 15) && ( (current_date.getDate() - date.getDate()) > 0)){
             if( (current_date.getDate() - date.getDate()) == 1){
-              time = current_date.getDate() - date.getDate()+" "+this.language_data.day
+              time = current_date.getDate() - date.getDate()+" "+this.data.day
             }
             else{
-              time = current_date.getDate() - date.getDate()+" "+this.language_data.days
+              time = current_date.getDate() - date.getDate()+" "+this.data.days
             }
           }
           else{
-            var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
-            time = date.getDate()+" "+this.language_data.of+" "+month[date.getMonth()]+" "+this.language_data.of+" "+date.getFullYear();
+            var month = [this.data.january,this.data.february,this.data.march,this.data.april, this.data.may,this.data.june,this.data.july,this.data.august,this.data.september,this.data.october,this.data.november,this.data.december];
+            time = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
+
           }
           this.set("events." + i + ".time", time);
+
         }
       },
-
       /* Function that parse the tweet's text */
       parser: function(list){
-        for(i = 0; i < list.length; i++){    
-          list[i].text = this.parseURL(list[i].text);
-          list[i].text = this.parseUsername(list[i].text);
-          list[i].text = this.parseHashtag(list[i].text);
+        for(i = 0; i < list.length; i++){
+          if(list[i].retweeted_status){
+            list[i].text = this.parseURL(list[i].retweeted_status.text);
+            list[i].text = this.parseUsername(list[i].text);
+            list[i].text = this.parseHashtag(list[i].text);
+          }
+          else{
+            list[i].text = this.parseURL(list[i].text);
+            list[i].text = this.parseUsername(list[i].text);
+            list[i].text = this.parseHashtag(list[i].text);
+          }
         }
         return list;
       },
-
       /* URLs parser */
       parseURL: function(tweet) {
         return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
           return '<a style="color:rgb(57, 145, 212)" href='+url+' target="_blank">'+url+'</a>'
         })
       },
-
+      /* Usernames parser */
       parseUsername: function(tweet) {
         return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
           var username = u.replace("@","")
           return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
         })
       },
-
+      /* Hashtags parser */
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
           return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
+      /* Function that handles paging tweets*/
+      toDisplay: function(){
+        if (this.index >= this.events.length) {
+          this.show = false;
+        } else {
+          this.index+=20;
+          if (this.index >= this.events.length) {
+            this.show = false;
+          }
+        }
 
+      },
       /* Calculate endpoint for request url */
-
+      _calculateLanguageUrl: function(component_directory, file) {
+        return component_directory + "language/" + file;
+      },
+      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+        return {
+          access_token: accessToken,
+          secret_token: secretToken,
+          consumer_key: consumerKey,
+          consumer_secret: consumerSecret,
+          count: count
+        };
+      },
+      _getUserurl: function(user) {
+        return "https://twitter.com/" + user;
+      },
+      _getStatusUrl: function(id, id_str) {
+        return "https://twitter.com/" + id + "/status/" + id_str;
+      },
+      _getTextId: function(index) {
+        return "Text" + index;
+      },
+      _withoutStatus: function(status) {
+        return !status;
+      },
+      _filter: function(item){
+        var dentro = false;
+        for (i=0;i<this.events.length && i<this.index && !dentro;i++) {
+          if (this.events[i].id === item.id)
+            dentro = true;
+        }
+        return dentro;
+      }
     })
   </script>
 </dom-module>
