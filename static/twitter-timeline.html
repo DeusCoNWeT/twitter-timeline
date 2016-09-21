@@ -8,163 +8,175 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="bower_components/paper-material/paper-material.html">
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-ajax/iron-ajax.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-material/paper-material.html">
+<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+
+
 
 
 <dom-module id="twitter-timeline">
-  <style is="custom-style">
-    @font-face {
-      font-family: HelveticaNeue;
-      src: url('font/HelveticaNeueLTStd-Ex.otf');
-    }
-    :host{
-      display: inline-block;
-    }
+<style is="custom-style">
+  @font-face {
+    font-family: HelveticaNeue;
+    src: url('font/HelveticaNeueLTStd-Ex.otf');
+  }
+  :host{
+    display: inline-block;
+    color: black;
+    width: var(--twitter-timeline-width, 350px);
+    height: var(--twitter-timeline-height, 350px);
+    min-height: 350px;
+    min-width: 350px;
+  }
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding:0;
+  }
+  .box {
+    border: 1px solid #d0f0f0;
+    border-bottom: 1px solid #d0f0f0;
+    border-left: 1px solid #d0f0f0;
+    width: 100%;
+    max-width:100%;
+    padding:7px 5px;
+    margin:0;
+    font-size: 14px;
+    background: #fff; /* Old browsers */
+    overflow: hidden;
+  }
 
-    .box {
-      border: 1px solid #d0f0f0;
-      border-bottom: 1px solid #d0f0f0;
-      border-left: 1px solid #d0f0f0;
-      max-width: 400px;
-      min-width: 350px;
-      padding:7px 5px;
-      margin:0;
-      font-size: 14px;
-      background: #fff; /* Old browsers */
+  #header {
+    background: rgb(5,171,224);
+    background: -moz-linear-gradient(45deg,  rgba(5,171,224,1) 0%, rgba(78,178,224,1) 60%, rgba(5,171,224,1) 100%);
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(5,171,224,1)), color-stop(60%,rgba(78,178,224,1)), color-stop(100%,rgba(5,171,224,1)));
+    background: -webkit-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    background: -o-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
 
+    color:#fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-family: 'Helvetica',sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    padding: 3px 8px;
+  }
 
+  #header > p {
+    text-align:center;
+    padding-left:50px;
+  }
+  #contain {
+    overflow-y: auto;
+    height: 100%;
+    background-color: white;
+  overflow-x: hidden;
+  }
+  #end {
+    background: #55acee;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 2px;
+  }
 
-    }
+  .imgEvent {
+    float: left;
+    width:50px;
+    height:50px;
+    margin: 2px 15px;
+  }
 
-    #header {
-      background: rgb(5,171,224);
-      background: -moz-linear-gradient(45deg,  rgba(5,171,224,1) 0%, rgba(78,178,224,1) 60%, rgba(5,171,224,1) 100%);
-      background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(5,171,224,1)), color-stop(60%,rgba(78,178,224,1)), color-stop(100%,rgba(5,171,224,1)));
-      background: -webkit-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      background: -o-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
+  .imgEvent /deep/ img {
+    border-radius: 10%;
+  }
 
-      color:#fff;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      font-family: 'Helvetica',sans-serif;
-      font-weight: 800;
-      font-size: 16px;
-      padding: 3px 8px;
-    }
+  .fullname {
+    font-weight: bold;
+    color: #292f33;
+  }
 
-    #header > p {
-      text-align:center;
-      padding-left:50px;
-    }
-    #contain {
-      overflow-y: auto;
-      max-height: 400px;
-    }
-    #end {
-      background: #55acee;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      height: 2px;
-    }
+  .fullname:hover{
+    color: #1E9999;
+    text-decoration:underline;
+  }
 
-    .imgEvent {
-      float: left;
-      width:50px;
-      height:50px;
-      margin: 2px 15px;
-    }
+  .username {
+    font-size: 13px;
+    color: #8899a6;
+  }
 
-    .imgEvent /deep/ img {
-      border-radius: 10%;
-    }
+  .nounderline {
+    text-decoration:none;
+    margin-right: 5px;
+  }
 
-    .fullname {
-      font-weight: bold;
-      color: #292f33;
-    }
+  .time {
+    font-size: 13px;
+    color: #8899a6;
+  }
 
-    .fullname:hover{
-      color: #1E9999;
-      text-decoration:underline;
-    }
+  .time:hover{
+    color: #1E9999;
+    text-decoration: underline;
+  }
 
-    .username {
-      font-size: 13px;
-      color: #8899a6;
-    }
+  .text {
+    font-size: 13px;
+    font-family: HelveticaNeue,Helvetica,Arial,sans-serif;
+    margin:5px 0px;
+  }
 
-    .nounderline {
-      text-decoration:none;
-      margin-right: 5px;
-    }
+  .button{
+    background: #fff;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-family:'Helvetica','sans-serif';
+    color: #55acee;
+    font-style: oblique;
+    transition: background .2s linear, border-radius 1s ease-in 1s;
+  }
+  .button:hover {
+    background: #55acee;
+    color: #fff;
+  }
+  ::-webkit-scrollbar {
+    width: 4px;
+    background: #b9b9b9;
+  }
 
-    .time {
-      font-size: 13px;
-      color: #8899a6;
-    }
+  ::-webkit-scrollbar-thumb {
+    background: #55acee;
+    -webkit-border-radius: 1ex;
+  }
+  .refresh {
+    text-align: right;
+  }
 
-    .time:hover{
-      color: #1E9999;
-      text-decoration: underline;
-    }
-
-    .text {
-      font-size: 13px;
-      font-family: HelveticaNeue,Helvetica,Arial,sans-serif;
-      margin:5px 0px;
-    }
-
-    .button{
-      background: #fff;
-      cursor: pointer;
-      text-align: center;
-      font-size: 14px;
-      font-family:'Helvetica','sans-serif';
-      color: #55acee;
-      font-style: oblique;
-      transition: background .2s linear, border-radius 1s ease-in 1s;
-    }
-    .button:hover {
-      background: #55acee;
-      color: #fff;
-    }
-    ::-webkit-scrollbar {
-      width: 4px;
-      background: #b9b9b9;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #55acee;
-      -webkit-border-radius: 1ex;
-    }
-    .refresh {
-      text-align: right;
-    }
-
-    .refresh_button {
-      height: 28px;
-      width: 28px;
-      padding:0;
-      margin:auto;
-    }
-  </style>
+  .refresh_button {
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+    padding:0;
+    margin:auto;
+  }
+</style>
   <template>
     <!-- Request to the API. Tokens are necessary -->
-    <iron-ajax 
+    <iron-ajax
                id="requesttimeline"
                url="{{ endpoint }}"
                method="GET"
                params="{{timeline_params}}"
-               headers="{'Timing-Allow-origin': '*'}"
                handleAs='json'
                on-response="_response"
                >
@@ -174,13 +186,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requestLanguage"
                url="{{language_url}}"
                method="GET"
-               headers="{'Timing-Allow-origin': '*'}"
                handleAs="json"
                on-response="_language_response"
                >
     </iron-ajax>
 
-    <paper-material>
+    <paper-material class="wrapper vertical layout">
       <!-- Header -->
       <paper-material>
         <div id ="header" class="horizontal center-justified layout">
@@ -261,7 +272,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true,
           observer: "languageChanged"
         },
-        count: { 
+        count: {
           type: Number,
           value: 200,
           notify: true,
@@ -271,33 +282,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         /*1 seg = 1000*/
         refresh_time: {
           type: Number,
-          value: 60000,
+          value: 120000,
           notify: true,
           reflectToAttribute: true
         },
-        accessToken: {
+        access_token: {
           type: String,
           value: "",
           notify: true,
           reflectToAttribute: true
         },
-        secretToken: {
+        secret_token: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
-        consumerKey: {
+        consumer_key: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
-        consumerSecret: {
+        consumer_secret: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         component_base: {
           type: String,
@@ -310,7 +321,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         timeline_params: {
           type: String,
-          computed: "_calculatetimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
+          computed: "_calculatetimelineParams(access_token, secret_token, consumer_key, consumer_secret, count)"
         },
         events: {
           type: Array,
@@ -355,6 +366,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       attached: function(){
         this.$.requestLanguage.generateRequest();
       },
+      detached: function(){
+        if  (this._interval){
+          window.clearInterval(this._interval);
+        }
+      },
       /* Language observer */
       languageChanged: function(newVal, oldValue) {
         if(newVal === "en"){
@@ -385,7 +401,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(this.events.length === 0){
           this.$.requesttimeline.generateRequest();
           var back = this
-          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+          this._interval = window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
         } else{
           /* Else we had elements, we change events.*.time*/
           this._changeTime(this.events);
@@ -406,7 +422,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var dif = current_date.getFullYear() - date.getFullYear()
             time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
             /* Meses */
-          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
             var dif = current_date.getMonth() - date.getMonth();
             time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
             /* Dias */
@@ -495,14 +511,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(component_directory, file) {
-        return component_directory + "language/" + file; 
+        return component_directory + "language/" + file;
       },
-      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+      _calculatetimelineParams: function(access_token, secret_token, consumer_key, consumer_secret, count) {
         return {
-          access_token: accessToken,
-          secret_token: secretToken,
-          consumer_key: consumerKey,
-          consumer_secret: consumerSecret,
+          access_token: access_token,
+          secret_token: secret_token,
+          consumer_key: consumer_key,
+          consumer_secret: consumer_secret,
           count: count
         };
       },
@@ -513,10 +529,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return "https://twitter.com/" + id + "/status/" + id_str;
       },
       _getTextId: function(index) {
-        return "Text" + index; 
+        return "Text" + index;
       },
       _withoutStatus: function(status) {
-        return !status; 
+        return !status;
       },
       _filter: function(item){
         var dentro = false;
