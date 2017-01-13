@@ -50,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-size: 14px;
       background: #fff; /* Old browsers */
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     #header {
@@ -179,6 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     params="{{timeline_params}}"
     handleAs='json'
     on-response="_response"
+    on-error="_loadMock"
     >
   </iron-ajax>
 
@@ -190,6 +192,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   on-response="_language_response"
   >
 </iron-ajax>
+  <iron-ajax
+  id="requestMock"
+  url="{{mockUrl}}"
+  method="GET"
+  handleAs="json"
+  on-response="_response"
+  >
+</iron-ajax>
+
+
 
 <paper-material class="wrapper vertical layout">
   <!-- Header -->
@@ -327,6 +339,12 @@ Polymer({
     language_data: {
       type: Array,
       value: []
+    },
+    mockUrl: {
+      type: String,
+      value: function(){
+        return this.resolveUrl('mockData/tweets.json');
+      }
     }
   },
 
@@ -514,7 +532,9 @@ Polymer({
       return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
     });
   },
-
+  _loadMock: function(){
+    this.$.requestMock.generateRequest();
+  }
   /* Calculate endpoint for request url */
 
 })
