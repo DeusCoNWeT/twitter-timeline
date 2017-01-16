@@ -179,6 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   params="{{timeline_params}}"
   handleAs='json'
   on-response="_response"
+  on-error="_loadMock"
   >
 </iron-ajax>
 
@@ -190,7 +191,15 @@ handleAs="json"
 on-response="_language_response"
 >
 </iron-ajax>
-
+</iron-ajax>
+  <iron-ajax
+  id="requestMock"
+  url="{{mockUrl}}"
+  method="GET"
+  handleAs="json"
+  on-response="_response"
+  >
+</iron-ajax>
 <paper-material class="wrapper vertical layout">
   <!-- Header -->
   <paper-material>
@@ -332,7 +341,13 @@ Polymer({
       type: Number,
       value: 2000,
       reflectToAttribute: true
+    },
+    mockUrl: {
+      type: String,
+      value: function(){
+        return this.resolveUrl('mockData/tweets.json');
     }
+}
   },
   sleep: function(milliseconds, cb) {
     window.setTimeout(cb,milliseconds);
@@ -517,6 +532,9 @@ Polymer({
       dentro = true;
     }
     return dentro;
+  },
+  _loadMock: function(){
+    this.$.requestMock.generateRequest();
   }
 })
 </script>
