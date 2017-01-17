@@ -382,6 +382,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         /* This function prepares the tweets before displaying them */
         _response: function (event, detail) {
+            if (detail.response.error){
+                this._loadMock();
+            }
             detail.response = this.changeData(detail.response);
             var parsed = this.parser(detail.response);
             this.set('events', parsed);
