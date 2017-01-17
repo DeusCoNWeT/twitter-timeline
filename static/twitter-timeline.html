@@ -384,11 +384,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _response: function (event, detail) {
             if (detail.response.error){
                 this._loadMock();
+            } else {
+              detail.response = this.changeData(detail.response);
+              var parsed = this.parser(detail.response);
+              this.set('events', parsed);
+              this._changeTime(this.events);
             }
-            detail.response = this.changeData(detail.response);
-            var parsed = this.parser(detail.response);
-            this.set('events', parsed);
-            this._changeTime(this.events);
         },
         _language_response: function (event, detail) {
             this.data = detail.response;
