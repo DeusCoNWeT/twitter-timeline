@@ -357,7 +357,7 @@ Polymer({
     }
   },
   _calculateLanguageUrl: function(component_base, file) {
-    return component_base + "language/" + file;
+    return this.resolveUrl('language/' + file);
   },
 
   _calculatetimelineParams: function(access_token, secret_token, consumer_key, consumer_secret, count) {
