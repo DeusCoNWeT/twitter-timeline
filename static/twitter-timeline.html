@@ -319,14 +319,9 @@ Polymer({
       notify: true,
       reflectToAttribute: true
     },
-    component_base: {
-      type: String,
-      value:"",
-      reflectToAttribute: true
-    },
     language_url: {
       type: String,
-      computed: "_calculateLanguageUrl(component_base, idiom)"
+      computed: "_calculateLanguageUrl(idiom)"
     },
     timeline_params: {
       type: String,
@@ -370,9 +365,7 @@ Polymer({
       this.language = "es";
       this.idiom = "es_es.json"
     }
-    if (this.component_base || this.component_base == "") {
-      this.$.requestLanguage.generateRequest();
-    }
+    this.$.requestLanguage.generateRequest();
   },
   renderTemplate: function(index, events) {
     this.$.tweets.render();
@@ -501,8 +494,8 @@ Polymer({
     }.bind(this))
   },
   /* Calculate endpoint for request url */
-  _calculateLanguageUrl: function(component_directory, file) {
-    return component_directory + "language/" + file;
+  _calculateLanguageUrl: function(file) {
+    return  this.resolveUrl("language/" + file);
   },
   _calculatetimelineParams: function(access_token, secret_token, consumer_key, consumer_secret, count) {
     return {
