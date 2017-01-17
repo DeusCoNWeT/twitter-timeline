@@ -318,14 +318,9 @@ Polymer({
       notify: true,
       reflectToAttribute: true
     },
-    component_base: {
-      type: String,
-      value:"",
-      reflectToAttribute: true
-    },
     language_url: {
       type: String,
-      computed: "_calculateLanguageUrl(component_base, idiom)"
+      computed: "_calculateLanguageUrl(idiom)"
     },
     timeline_params: {
       type: String,
@@ -356,7 +351,7 @@ Polymer({
       window.clearInterval(this._interval);
     }
   },
-  _calculateLanguageUrl: function(component_base, file) {
+  _calculateLanguageUrl: function(file) {
     return this.resolveUrl('language/' + file);
   },
 
@@ -405,9 +400,7 @@ Polymer({
       this.language = "es";
       this.idiom = "es_es.json"
     }
-    if (this.component_base || this.component_base == "") {
-      this.$.requestLanguage.generateRequest();
-    }
+    this.$.requestLanguage.generateRequest();
   },
 
   renderTemplate: function(index, events) {
