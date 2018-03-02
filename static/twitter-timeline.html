@@ -53,6 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       box-sizing: border-box;
     }
 
+
     #header {
       background: rgb(5,171,224);
       background: -moz-linear-gradient(45deg,  rgba(5,171,224,1) 0%, rgba(78,178,224,1) 60%, rgba(5,171,224,1) 100%);
@@ -112,7 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     .username {
       font-size: 13px;
-      color: #8899a6;
+      color: #677885;
     }
 
     .nounderline {
@@ -122,7 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     .time {
       font-size: 13px;
-      color: #8899a6;
+      color: #677885;
     }
 
     .time:hover{
@@ -142,7 +143,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       text-align: center;
       font-size: 14px;
       font-family:'Helvetica','sans-serif';
-      color: #55acee;
+      color: #247bbd;
       font-style: oblique;
       transition: background .2s linear, border-radius 1s ease-in 1s;
     }
@@ -217,8 +218,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter" observe="time item.time">
       <ul class="box horizontal layout">
         <!-- Profile picture -->
-        <iron-icon src="{{item.user.profile_image_url_https}}" class="imgEvent">
-        </iron-icon>
+        <img alt="user picture" src="{{item.user.profile_image_url_https}}" class="imgEvent">
+        </img>
         <!-- Publication Header -->
         <div style="text-align: left" class="vertical layout flex">
           <div class="horizontal layout ">
@@ -512,21 +513,21 @@ Polymer({
   /* URLs parser */
   parseURL: function(tweet) {
     return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
-      return '<a style="color:rgb(57, 145, 212)" href='+url+' target="_blank">'+url+'</a>'
+      return '<a style="color:rgb(35, 123, 190)" href='+url+' target="_blank">'+url+'</a>'
     })
   },
 
   parseUsername: function(tweet) {
     return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
       var username = u.replace("@","")
-      return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
+      return '<a style="color:rgb(35, 123, 190)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
     })
   },
 
   parseHashtag: function(tweet) {
     return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
       var tag = t.replace("#","")
-      return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
+      return '<a style="color:rgb(35, 123, 190)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
     });
   },
   _loadMock: function(){
