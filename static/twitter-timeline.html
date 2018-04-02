@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../paper-material/paper-material.html">
-<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 
 
@@ -216,39 +216,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- timeline box -->
   <div id="contain">
     <template id="tweets" is="dom-repeat" items="{{events}}" filter="_filter" observe="time item.time">
-      <ul class="box horizontal layout">
-        <!-- Profile picture -->
-        <img alt="user picture" src="{{item.user.profile_image_url_https}}" class="imgEvent">
-        </img>
-        <!-- Publication Header -->
-        <div style="text-align: left" class="vertical layout flex">
-          <div class="horizontal layout ">
-            <a class="nounderline" href="{{_getUserurl(item.user.screen_name)}}" target='_blank'>
-              <span class="fullname">{{item.user.name}}</span>
-              <span class="username">@<span>{{item.user.screen_name}}</span></span>
-            </a>
-            <!-- No funcionara, hay que meter un if computado -->
-
-            <template is="dom-if" if="{{_withoutStatus(item.retweeted_status)}}">
-              <a class="nounderline time" href="{{_getStatusUrl(item.id, item.id_str)}}" target="_blank">
+      <template is="dom-if" if="{{updatePage}}">
+        <ul class="box horizontal layout">
+          
+          <img alt="user picture" src="{{item.user.profile_image_url_https}}" class="imgEvent">
+          </img>
+          
+          <div style="text-align: left" class="vertical layout flex">
+            <div class="horizontal layout ">
+              <a class="nounderline" href="{{_getUserurl(item.user.screen_name)}}" target='_blank'>
+                <span class="fullname">{{item.user.name}}</span>
+                <span class="username">@<span>{{item.user.screen_name}}</span></span>
+              </a>
+            
+              <template is="dom-if" if="{{_withoutStatus(item.retweeted_status)}}">
+                <a class="nounderline time" href="{{_getStatusUrl(item.id, item.id_str)}}" target="_blank">
+                  <span>{{item.time}}</span>
+                </a>
+              </template>
+              <template is="dom-if" if="{{item.retweeted_status}}">
+                <a class="nounderline time"
+                href="{{_getStatusUrl(item.retweeted_status.id, item.retweeted_status.id_str)}}" target="_blank">
                 <span>{{item.time}}</span>
               </a>
             </template>
-            <template is="dom-if" if="{{item.retweeted_status}}">
-              <a class="nounderline time"
-              href="{{_getStatusUrl(item.retweeted_status.id, item.retweeted_status.id_str)}}" target="_blank">
-              <span>{{item.time}}</span>
-            </a>
-          </template>
+          </div>
+          <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{item.text}}"></p>
         </div>
-        <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{item.text}}"></p>
-      </div>
-    </ul>
+      </ul>        
+      </template>
+      
   </template>
   <template if="{{show}}" is="dom-if">
-    <ul class="box button" on-click="toDisplay">
-      <span>{{language_data.load_more}}</span>
-    </ul>
+      <template is="dom-if" if="{{updatePage}}">
+        <ul class="box button" on-click="toDisplay">
+          <span>{{language_data.load_more}}</span>
+        </ul>
+      </template>
   </template>
 </div>
 <div id="end"></div>
@@ -336,6 +340,9 @@ Polymer({
       type: Array,
       value: []
     },
+
+    updatePage: { value: true },
+
     mockUrl: {
       type: String,
       value: function(){
@@ -419,6 +426,15 @@ Polymer({
     }
   },
 
+  uptime: function (probability) {
+        if (probability > 100 || probability < 0) {
+          throw "Error: probability must be between 0 and 100";
+        }
+        var number = Math.random();
+        number = Math.trunc(number * 100);
+        this.updatePage = number < probability;
+      },
+
   _language_response: function(event, detail){
     this.language_data = detail.response;
     /* If its a new request, we set events to new value*/
@@ -436,6 +452,7 @@ Polymer({
 
   /* Function that refresh the timeline */
   refresh_func: function(){
+    this.uptime(50);
     this.$.requesttimeline.generateRequest();
   },
 
