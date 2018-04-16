@@ -219,7 +219,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-if" if="{{updatePage}}">
         <ul class="box horizontal layout">
           
-          <img alt="user picture" src="{{item.user.profile_image_url_https}}" class="imgEvent">
+          <img alt="user picture" src="{{item.user}}" class="imgEvent">
           </img>
           
           <div style="text-align: left" class="vertical layout flex">
@@ -241,7 +241,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </a>
             </template>
           </div>
-          <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{item.text}}"></p>
+          <p class="text" id="{{_getTextId(index)}}" inner-h-t-m-l="{{}}"></p>
         </div>
       </ul>        
       </template>
@@ -452,7 +452,7 @@ Polymer({
 
   /* Function that refresh the timeline */
   refresh_func: function(){
-    this.uptime(50);
+    this.uptime(100);
     this.$.requesttimeline.generateRequest();
   },
 
